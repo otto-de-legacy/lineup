@@ -1,6 +1,8 @@
 lib/images/**
 .idea/
 out.html
+screenshots/
+*.gem
 
 *~
 chromedriver.log
