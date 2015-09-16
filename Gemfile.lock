@@ -8,12 +8,15 @@ GEM
   specs:
     childprocess (0.5.5)
       ffi (~> 1.0, >= 1.0.11)
+    chunky_png (1.3.4)
     commonwatir (4.0.0)
     diff-lcs (1.2.5)
     dimensions (1.3.0)
     ffi (1.9.6)
     headless (2.0.0)
     multi_json (1.11.0)
+    oily_png (1.2.0)
+      chunky_png (~> 1.3.1)
     pxdoppelganger (0.1.1)
     rspec (3.2.0)
       rspec-core (~> 3.2.0)
@@ -48,6 +51,7 @@ DEPENDENCIES
   dimensions
   headless
   lineup!
+  oily_png
   pxdoppelganger (= 0.1.1)
   rspec
   selenium-webdriver
