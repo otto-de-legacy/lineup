@@ -4,6 +4,8 @@ require_relative 'controller/comparer'
 
 module Lineup
 
+  attr_accessor :difference
+
   class Screenshot
 
     def initialize(baseurl)
@@ -12,11 +14,17 @@ module Lineup
       resolutions('640, 800, 1180')
       filepath_for_images("#{Dir.pwd}/screenshots")
       use_headless(false)
+      difference_path("#{Dir.pwd}/screenshots")
     end
 
     def urls(urls)
+      raise "url for screenshot cannot be <empty string>" if urls == ''
       raise_base_screenshots_taken('The urls')
-      @urls= urls.gsub(' ', '').split(",")
+      begin
+        @urls= urls.gsub(' ', '').split(",")
+      rescue NoMethodError
+        raise "urls must be in a "
+      end
     end
 
     def resolutions(resolutions)
@@ -41,12 +49,13 @@ module Lineup
       @got_base_screenshots = true
     end
 
-    def compare(base, new)
-      Comparer.new(base, new, @baseurl, @urls, @resolutions, @screenshots_path)
+    def difference_path(path)
+      @difference_path = path
     end
 
-    def difference
-
+    def compare(base, new)
+      comparer = Comparer.new(base, new, @difference_path, @baseurl, @urls, @resolutions, @screenshots_path)
+      comparer.difference
     end
 
   private

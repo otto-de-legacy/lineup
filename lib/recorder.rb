@@ -13,15 +13,19 @@ module Recorder
 
   def name(page)
     if page == '/'
-      name = 'storefront'
+      name = 'frontpage'
     else #remove forward slash
-      name = page.gsub(/\//, "_")
+      name = page.gsub(/\//, "")
     end
     name
   end
 
   def clean(url)
-    '' if url == '/' #avoid two dashes at the end, e.g. www.otto.de//
+    if url == '/' #avoid two dashes at the end, e.g. www.otto.de//
+      ''
+    else
+      url
+    end
   end
 
 end
