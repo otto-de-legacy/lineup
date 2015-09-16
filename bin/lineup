@@ -2,4 +2,6 @@
 
 require 'lineup'
 
-Lineup::Screenshot.new('otto.de')
+lineup = Lineup::Screenshot.new('otto.de')
+lineup.use_headless false
+lineup.record_screenshot('base')

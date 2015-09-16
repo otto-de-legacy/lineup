@@ -3,16 +3,17 @@ require 'watir-webdriver'
 include Selenium
 require 'fileutils'
 require 'headless'
+require_relative '../recorder'
 
 class Browser
 
-  def initialize(baseurl, urls, resolutions, path, firefox)
+  def initialize(baseurl, urls, resolutions, path, headless)
     @absolute_image_path = path
     FileUtils.mkdir_p @absolute_image_path
     @baseurl = baseurl
     @urls = urls
     @resolutions = resolutions
-    @firefox = firefox
+    @headless = headless
   end
 
   def record(version)
@@ -22,7 +23,9 @@ class Browser
         screenshot_recorder(width, url, version)
       end
     end
+  end
 
+  def end
     @browser.close
     @headless.destroy if @headless
   end
@@ -30,31 +33,20 @@ class Browser
   private
 
   def browser_loader
-    if @firefox
-      @browser = Watir::Browser.new :firefox
-    else
+    if @headless
       @headless = Headless.new
       @headless.start
-      @browser = Watir::Browser.start @baseurl
     end
+    @browser = Watir::Browser.new :firefox
   end
 
   def screenshot_recorder(width, url, version)
-    filename = "#{@absolute_image_path}/#{name(url)}_#{width}_#{version}.png"
+    filename = Recorder.filename(@absolute_image_path, url, width, version)
     @browser.driver.manage.window.resize_to(width, 1000)
     @browser.cookies.clear
-    puts "#{@baseurl}/#{url}"
-    @browser.goto("#{@baseurl}/#{url}")
+    url = Recorder.url(@baseurl, url)
+    @browser.goto url
     @browser.screenshot.save( File.expand_path(filename))
-  end
-
-  def name(page)
-    if page == '/'
-      name = 'storefront'
-    else #remove forward slash
-      name = page.gsub(/\//, "")
-    end
-    name
   end
 
 end
