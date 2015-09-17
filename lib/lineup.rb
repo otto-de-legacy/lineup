@@ -8,8 +8,6 @@ module Lineup
 
   class Screenshot
 
-
-
     def initialize(baseurl)
 
       # the base URL is the root url (in normal projects the frontpage or for us storefront)
@@ -211,15 +209,26 @@ module Lineup
       # as "variable" in the method "record_screenshot"!
       # all other information are constants and are passed along
 
-      comparer = Comparer.new(base, new, @difference_path, @baseurl, @urls, @resolutions, @screenshots_path)
+      @comparer = Comparer.new(base, new, @difference_path, @baseurl, @urls, @resolutions, @screenshots_path)
 
       # this gives back an array, which as one element for each difference image.
-      # [ diff_1, diff_2 , ...]
-      # while for each diff is an array containing the "base" image filepath,
-      # the "new" image filepath, the "diff" image filepath as well as the
-      # difference between the "base" and "new" image in percent (%)
+      # [ {diff_1}, {diff_2}, ...]
+      # while each diff is a hash with keys:
+      # {url: <url>, width: <width in px>, difference: <%of changed pixel>, diff_file: <file path>}
 
-      comparer.difference
+      @comparer.difference
+    end
+
+    def json(path)
+
+      # json output can be saved if needed. A path is required to save the file
+
+      raise "screenshots need to be compared before json output can be gernerated" unless @comparer
+
+      # the array from @comparer.difference is saved as json
+
+      @comparer.json(path)
+
     end
 
   private

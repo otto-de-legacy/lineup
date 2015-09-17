@@ -80,10 +80,11 @@ describe '#screeshot_recorder' do
 
   end
 
-  it 'compares a base and a new screenshot and returns the difference if the images are NOT the same' do
+  it 'compares a base and a new screenshot and returns the difference if the images are NOT the same as json log' do
     width = '600'
     base_site = 'multimedia'
     new_site = 'sport'
+    json_file = ("#{Dir.pwd}/log.json")
     lineup = Lineup::Screenshot.new(BASE_URL)
     lineup.urls(base_site)
     lineup.resolutions(width)
@@ -94,8 +95,14 @@ describe '#screeshot_recorder' do
     lineup.resolutions(width)
     lineup.record_screenshot('new')
     expect(
-        lineup.compare('base', 'new').first.last
+        (lineup.compare('base', 'new').first.first)[:difference]
     ).to be_within(15).of(20) #this works toady (12.3 on 2015/09), but the pages may some day look more or less alike, then these values can be changed
+    lineup.json(Dir.pwd)
+    expect(
+        File.exist? json_file
+    ).to be(true)
+    #cleanup:
+    FileUtils.rm json_file if (File.exists? json_file)
   end
 
 end
