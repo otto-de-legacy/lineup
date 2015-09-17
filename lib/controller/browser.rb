@@ -3,7 +3,7 @@ require 'watir-webdriver'
 include Selenium
 require 'fileutils'
 require 'headless'
-require_relative '../recorder'
+require_relative '../helper'
 
 class Browser
 
@@ -41,10 +41,10 @@ class Browser
   end
 
   def screenshot_recorder(width, url, version)
-    filename = Recorder.filename(@absolute_image_path, url, width, version)
+    filename = Helper.filename(@absolute_image_path, url, width, version)
     @browser.driver.manage.window.resize_to(width, 1000)
     @browser.cookies.clear
-    url = Recorder.url(@baseurl, url)
+    url = Helper.url(@baseurl, url)
     @browser.goto url
     @browser.screenshot.save( File.expand_path(filename))
   end

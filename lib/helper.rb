@@ -1,4 +1,4 @@
-module Recorder
+module Helper
   extend self
 
   def filename(path, url, width, version)

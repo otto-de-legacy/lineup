@@ -70,7 +70,7 @@ describe '#screeshot_recorder' do
 
   it 'compares a base and a new screenshot and detects no difference if images are the same' do
     lineup = Lineup::Screenshot.new(BASE_URL)
-    lineup.urls('/')
+    lineup.urls('/shoppages/begood')
     lineup.resolutions('400')
     lineup.record_screenshot('base')
     lineup.record_screenshot('new')
@@ -81,21 +81,21 @@ describe '#screeshot_recorder' do
   end
 
   it 'compares a base and a new screenshot and returns the difference if the images are NOT the same' do
-    width = '400'
-    base_site = '/index.html'
-    new_site = '/schwer.html'
+    width = '600'
+    base_site = 'multimedia'
+    new_site = 'sport'
     lineup = Lineup::Screenshot.new(BASE_URL)
     lineup.urls(base_site)
     lineup.resolutions(width)
     lineup.record_screenshot('base')
-    FileUtils.mv "#{Dir.pwd}/screenshots#{base_site}_#{width}_base.png", "#{Dir.pwd}/screenshots#{new_site}_#{width}_base.png"
+    FileUtils.mv "#{Dir.pwd}/screenshots/#{base_site}_#{width}_base.png", "#{Dir.pwd}/screenshots/#{new_site}_#{width}_base.png"
     lineup = Lineup::Screenshot.new(BASE_URL)
     lineup.urls(new_site)
     lineup.resolutions(width)
     lineup.record_screenshot('new')
     expect(
-        lineup.compare('base', 'new')
-    ).to eq([0])
+        lineup.compare('base', 'new').first.last
+    ).to be_within(15).of(20) #this works toady (12.3 on 2015/09), but the pages may some day look more or less alike, then these values can be changed
   end
 
 end
