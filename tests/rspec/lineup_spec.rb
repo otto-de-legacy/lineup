@@ -8,7 +8,7 @@ describe '#screeshot_recorder' do
   BASE_URL = 'https://www.otto.de'
   SCREENSHOTS = "#{Dir.pwd}/screenshots/"
 
-  #after(:each) { FileUtils.rmtree SCREENSHOTS }
+  after(:each) { FileUtils.rmtree SCREENSHOTS }
 
   it 'opens a URL and takes mobile/tablet/desktop screenshots' do
     lineup = Lineup::Screenshot.new(BASE_URL)
