@@ -26,8 +26,15 @@ class Browser
   end
 
   def end
-    @browser.close
+    begin #Timeout::Error
+      Timeout::timeout(10) { @browser.close }
+    rescue Timeout::Error
+      browser_pid = @browser.driver.instance_variable_get(:@bridge).instance_variable_get(:@service).instance_variable_get(:@process).pid
+      ::Process.kill('KILL', browser_pid)
+      sleep 1
+    end
     @headless.destroy if @headless
+    sleep 5 # to prevent xvfb to freeze
   end
 
   private
