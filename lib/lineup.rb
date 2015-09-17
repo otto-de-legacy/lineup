@@ -48,7 +48,7 @@ module Lineup
       use_headless(true)
 
       # this is the path where to save the difference images of two not alike screenshots
-      # by default the current directory
+      # by default the current directory, like for the other images
       # see more in according method below
 
       difference_path("#{Dir.pwd}/screenshots")
@@ -75,7 +75,7 @@ module Lineup
       #we remove whitespaces from the urls, replace ; by , and generate an array, splitted by comma
 
       begin
-        @urls= urls.clean.split(",")
+        @urls= clean(urls).split(",")
       rescue NoMethodError
         raise "urls must be in a comma separated string"
       end
@@ -102,7 +102,7 @@ module Lineup
       #we remove whitespaces from the urls, replace ; by , and generate an array of integers
 
       begin
-        @resolutions = resolutions.clean.split(",").map { |s| s.to_i }
+        @resolutions = clean(resolutions).split(",").map { |s| s.to_i }
       rescue NoMethodError
         raise "resolutions must be in a comma separated string"
       end
@@ -141,7 +141,7 @@ module Lineup
       #
       # if its not a boolean an exception is raised
 
-      raise "use_headless can only be true or false" unless path.is_a? Boolean
+      raise "use_headless can only be true or false" unless boolean == !!boolean
 
       # after the base screenshots are taken, the browser cannot be changed, an exception would be raised
 
@@ -153,19 +153,72 @@ module Lineup
       @headless = boolean
     end
 
-    def record_screenshot(version)
-      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless)
-      browser.record(version)
-      browser.end
-      @got_base_screenshots = true
-    end
+
 
     def difference_path(path)
+
+      # if required an absolute path to store all difference images can be passed here.
+      # in most usecases you may want to save them along with the base and new images
+      #
+      # e.g '/home/finn/pictures/otto'
+      #
+      # if its not a string or the string is empty an exception is raised
+
+      raise "path for difference images needs to be a string" unless path.is_a? String
+      raise "the path for the difference images cannot be <empty string>" if path == ''
+
+      # assign the variable
+
       @difference_path = path
     end
 
+
+
+    def record_screenshot(version)
+
+      # to take a screenshot we have all parameters given from the methods above (or set to default values)
+      # selenium is started in
+      #   @headless or firefox
+      # and takes a screenshot of the urls
+      #   @baseurl/@url[0], @baseurl/@url[1], etc...
+      # and takes a screenshot for each url for all given resolutions
+      #   @resolutions[0], @resolutions[1], etc...
+      # and saves the screenshot in the file
+      #   @screenshot_path
+
+      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless)
+
+      # the only argument missing is if this is the "base" or "new" screenshot, this can be
+      # passed as an argument. The value does not need to be "base" or "new", but can be anything
+
+      browser.record(version)
+
+      # this will close the browser and terminate the headless environment
+
+      browser.end
+
+      # this flag is set, so that parameters like resolution or urls cannot be changed any more
+
+      @got_base_screenshots = true
+    end
+
+
+
     def compare(base, new)
+
+      # this compares two previously taken screenshots
+      # the "base" and "new" variable need to be the same as previously assigned
+      # as "variable" in the method "record_screenshot"!
+      # all other information are constants and are passed along
+
       comparer = Comparer.new(base, new, @difference_path, @baseurl, @urls, @resolutions, @screenshots_path)
+
+      # this gives back an array, which as one element for each difference image.
+      # [ diff_1, diff_2 , ...]
+      # while for each diff is an array containing the "base" image filepath,
+      # the "new" image filepath, the "diff" image filepath as well as the
+      # difference between the "base" and "new" image in percent (%)
+
       comparer.difference
     end
 
@@ -177,8 +230,8 @@ module Lineup
       end
     end
 
-    def clean
-      gsub(' ', '').gsub(';',',')
+    def clean(urls)
+      urls.gsub(' ', '').gsub(';',',')
     end
 
   end
