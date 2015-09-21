@@ -64,7 +64,7 @@ class Comparer
 
   def generate_json(path)
     difference.each do |result|
-      json = result.to_json
+      json = result.first.to_json
       file = File.open(
           "#{path}/log.json","a"
       )

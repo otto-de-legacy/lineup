@@ -53,7 +53,6 @@ module Lineup
     end
 
 
-
     def urls(urls)
 
       # all urls to be tested are defined here
@@ -168,6 +167,31 @@ module Lineup
       # assign the variable
 
       @difference_path = path
+    end
+
+
+
+    def load_json_config(path)
+
+      # loads all possible configs from a json file.
+      # in this file all parameters need to be set
+      # an example configuration is
+      # '{"urls":"/multimedia, /sport","resolutions":"600,800,1200","filepath_for_images":"~/images/","use_headless":true,"difference_path":"#/images/diff"}'
+
+      #open the file and parse JSON format
+      configuration = JSON.parse(File.read(path))
+
+      # write to method above
+      urls(configuration["urls"])
+      resolutions(configuration["resolutions"])
+      filepath_for_images(configuration["filepath_for_images"])
+      use_headless(configuration["use_headless"])
+      difference_path(configuration["difference_path"])
+
+      # the method calls set the variables for the parameters, we return an array with all of them.
+      # for the example above it is:
+      # [["/multimedia", "/sport"], [600, 800, 1200], "~/images/", true, "#/images/diff"]
+      [@urls, @resolutions, @screenshots_path, @headless, @difference_path]
     end
 
 
