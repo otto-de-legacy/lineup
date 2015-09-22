@@ -68,6 +68,10 @@ class Comparer
 
   def generate_json(path)
     difference.each do |result|
+      puts difference
+      f = File.open("#{Dir.pwd}/direct.json")
+      f.write difference
+      f.close
       json = result.first.to_json
       file = File.open(
           "#{path}/log.json", "a+"
