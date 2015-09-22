@@ -153,7 +153,7 @@ describe '#screeshot_recorder' do
     # but the pages may some day look more or less alike, then these values can be changed
 
     # And When
-    lineup.json(Dir.pwd)
+    lineup.save_json(Dir.pwd)
     
     # Then
     expect(

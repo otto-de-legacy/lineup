@@ -243,7 +243,7 @@ module Lineup
       @comparer.difference
     end
 
-    def json(path)
+    def save_json(path)
 
       # json output can be saved if needed. A path is required to save the file
 
