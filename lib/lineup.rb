@@ -238,7 +238,7 @@ module Lineup
       # this gives back an array, which as one element for each difference image.
       # [ {diff_1}, {diff_2}, ...]
       # while each diff is a hash with keys:
-      # {url: <url>, width: <width in px>, difference: <%of changed pixel>, diff_file: <file path>}
+      # {url: <url>, width: <width in px>, difference: <%of changed pixel>, base_file: <file path>, new_file: <file path>, diff_file: <file path>}
 
       @comparer.difference
     end

@@ -56,7 +56,9 @@ class Comparer
                     url: url,
                     width: width,
                     difference: images.difference,
-                    diff_file: diff_name
+                    base_file: base_name,
+                    new_file: new_name,
+                    difference_file: diff_name
           ]
           self.difference << result
         end

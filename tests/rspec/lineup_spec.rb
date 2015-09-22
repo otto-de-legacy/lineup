@@ -131,12 +131,16 @@ describe '#screeshot_recorder' do
     width = '600'
     base_site = 'multimedia'
     new_site = 'sport'
-    json_file = ("#{Dir.pwd}/log.json")
+    json_path = "#{Dir.pwd}/somepath"
+    json_file = "#{json_path}/log.json"
+
+    # And Given
     lineup = Lineup::Screenshot.new(BASE_URL)
     lineup.urls(base_site)
     lineup.resolutions(width)
     lineup.record_screenshot('base')
-    FileUtils.mv "#{Dir.pwd}/screenshots/#{base_site}_#{width}_base.png", "#{Dir.pwd}/screenshots/#{new_site}_#{width}_base.png"
+    FileUtils.mv "#{Dir.pwd}/screenshots/base_#{base_site}_#{width}.png", "#{Dir.pwd}/screenshots/base_#{new_site}_#{width}.png"
+    # change the url and go to a different page, in this way we ensure a conflict and thus a result from the comparison
     lineup = Lineup::Screenshot.new(BASE_URL)
     lineup.urls(new_site)
     lineup.resolutions(width)
@@ -145,20 +149,53 @@ describe '#screeshot_recorder' do
     lineup.record_screenshot('new')
 
     # Then
+    # the output will be similar to the values here:
+    # {
+    #   :url => 'sport',
+    #   :width => 600,
+    #   :difference => 0.7340442722738748,
+    #   :base_file => '~/lineup/tests/respec/screenshots/base_sport_600.png'
+    #   :new_file =>  '~/lineup/tests/respec/screenshots/new_sport_600.png'
+    #   :diff_file => '~/lineup/tests/rspec/screenshots/DIFFERENCE_sport_600.png'
+    # }
     expect(
-        (lineup.compare('base', 'new').first.first)[:difference]
-        # eg. {:url=>'sport', :width=>600, :difference=>0.7340442722738748, :diff_file=>'~/lineup/tests/rspec/screenshots/sport_600_DIFFERENCE.png'}
+        (lineup.compare('base', 'new').first.first)[:url]
+    ).to eq('sport')
+    # And
+    expect(
+        (lineup.compare('base', 'new').first.first)[:width]
+    ).to eq(600)
+    # And
+    result = (lineup.compare('base', 'new').first.first)[:difference]
+    expect(
+        result
     ).to be_within(15).of(20) # 'compare' returns the difference of pixel between the screenshots in %
     # 15-20% of pixel works toady (12.3 on 2015/09) for the difference between sport and multimedia page of OTTO.de,
     # but the pages may some day look more or less alike, then these values can be changed
+    # And
+    expect(
+        (lineup.compare('base', 'new').first.first)[:base_file]
+    ).to include("/lineup/tests/rspec/screenshots/base_sport_600.png")
+    # And
+    expect(
+        (lineup.compare('base', 'new').first.first)[:new_file]
+    ).to include("/lineup/tests/rspec/screenshots/new_sport_600.png")
+    # And
+    expect(
+        (lineup.compare('base', 'new').first.first)[:difference_file]
+    ).to include("/lineup/tests/rspec/screenshots/DIFFERENCE_sport_600.png")
 
     # And When
-    lineup.save_json(Dir.pwd)
+    lineup.save_json(json_path)
     
     # Then
     expect(
         File.exist? json_file
     ).to be(true)
+    # And
+    expect(
+        File.read json_file
+    ).to include("\"difference\":#{result},")
 
     # cleanup:
     FileUtils.rm json_file if (File.exists? json_file)
