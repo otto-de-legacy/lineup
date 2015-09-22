@@ -39,15 +39,15 @@ describe '#screeshot_recorder' do
 
     # Then
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/frontpage_640_base.png")
+        File.exist? ("#{Dir.pwd}/screenshots/base_frontpage_640.png")
     ).to be(true)
     # And
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/frontpage_800_base.png")
+        File.exist? ("#{Dir.pwd}/screenshots/base_frontpage_800.png")
     ).to be(true)
     # And
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/frontpage_1180_base.png")
+        File.exist? ("#{Dir.pwd}/screenshots/base_frontpage_1180.png")
     ).to be(true)
 
   end
@@ -62,7 +62,7 @@ describe '#screeshot_recorder' do
 
     # Then
     lineup.record_screenshot('base')
-    imagewidth = Dimensions.width("#{Dir.pwd}/screenshots/frontpage_#{width}_base.png")
+    imagewidth = Dimensions.width("#{Dir.pwd}/screenshots/base_frontpage_#{width}.png")
     expect(
         imagewidth
     ).to be < (width.to_i + 10) #depending on the browser:
@@ -84,11 +84,11 @@ describe '#screeshot_recorder' do
 
     # Then
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/frontpage_1180_base.png")
+        File.exist? ("#{Dir.pwd}/screenshots/base_frontpage_1180.png")
     ).to be(true)
 
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/multimedia_1180_base.png")
+        File.exist? ("#{Dir.pwd}/screenshots/base_multimedia_1180.png")
     ).to be(true)
 
   end
