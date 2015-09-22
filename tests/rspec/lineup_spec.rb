@@ -77,10 +77,10 @@ describe '#screeshot_recorder' do
     urls = '/, multimedia, sport'
     lineup = Lineup::Screenshot.new(BASE_URL)
     lineup.resolutions('1180')
-    lineup.record_screenshot('base')
+    lineup.urls(urls)
 
     # When
-    lineup.urls(urls)
+    lineup.record_screenshot('base')
 
     # Then
     expect(
