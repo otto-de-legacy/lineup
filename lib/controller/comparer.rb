@@ -13,10 +13,12 @@ class Comparer
     @resolutions = resolutions
     @absolute_image_path = screenshot_path
     @difference_path = difference_path
+    FileUtils.mkdir_p difference_path
     compare_images
   end
 
   def json(path)
+    FileUtils.mkdir_p path
     generate_json(path)
   end
 
@@ -66,7 +68,7 @@ class Comparer
     difference.each do |result|
       json = result.first.to_json
       file = File.open(
-          "#{path}/log.json","a"
+          "#{path}/log.json", "a+"
       )
       file.write(json)
       file.close
