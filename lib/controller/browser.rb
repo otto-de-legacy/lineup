@@ -43,8 +43,10 @@ class Browser
     if @headless
       @headless = Headless.new
       @headless.start
+      @browser = Watir::Browser.start @baseurl
+    else
+      @browser = Watir::Browser.new :firefox
     end
-    @browser = Watir::Browser.new :firefox
   end
 
   def screenshot_recorder(width, url, version)
