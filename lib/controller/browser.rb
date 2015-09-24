@@ -33,7 +33,6 @@ class Browser
       ::Process.kill('KILL', browser_pid)
       sleep 1
     end
-    @headless.destroy if @headless
     sleep 5 # to prevent xvfb to freeze
   end
 
@@ -41,9 +40,7 @@ class Browser
 
   def browser_loader
     if @headless
-      @headless = Headless.new
-      @headless.start
-      @browser = Watir::Browser.start @baseurl
+      @browser = Watir::Browser.new :phantomjs
     else
       @browser = Watir::Browser.new :firefox
     end
