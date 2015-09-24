@@ -7,6 +7,8 @@ get an analysis about the difference of the designs:
 For all images that you want to compare, you will receive information about how many pixel are different
 between the two image version and an image, that contains only the parts, that changed, a "difference image".
 
+![Example view of base (left), new (right) as well as diff image.](doc/example.png)
+Picture: Example view of base (left), new (right) as well as diff image.
 
 ## Requirements
 
@@ -20,7 +22,7 @@ gem "lineup"
 ````
 
 Or install it manually with the following command:
-````ruby
+````
 gem install lineup
 ````
 
@@ -128,9 +130,13 @@ lineup.difference_path(difference_path)
     
 lineup.record_screenshot(base_name)
 # do sth. (eg. deploy new software)
-lineup.record_screenshot('new')
+lineup.record_screenshot(new_name)
 lineup.save_json(json_path)
 ````
 Now open home/myname/lineup/results and find:
 the difference files and a log.json with all information about what images are not the same.
+
+## Contribute
+
+Please do!
  
