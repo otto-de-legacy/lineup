@@ -25,6 +25,7 @@ module Lineup
       # the urls are combined with the root url and give the absolute url of the pages to be tested
       # see more in the according method below
       # the default value is the baseurl itself, represented by a forward slash
+      # the images will be saved as "frontpage" images
 
       urls('/')
 
@@ -43,7 +44,7 @@ module Lineup
       # by default in headless
       # see more in according method below
 
-      use_headless(true)
+      use_phantomjs(true)
 
       # this is the path where to save the difference images of two not alike screenshots
       # by default the current directory, like for the other images
@@ -59,6 +60,8 @@ module Lineup
       # they need to be passed as a comma separated string (with or without whitespaces)
       #
       # e.g "/, /multimedia, /sport"
+      #
+      # the pages are used to name the image files, too
       #
       # if it is not a string or the string is empty an exception is raised
 
@@ -130,7 +133,7 @@ module Lineup
 
     
     
-    def use_headless(boolean)
+    def use_phantomjs(boolean)
 
       # if required the headless environment can we skipped and firefox used for the screenshots
       #
@@ -185,7 +188,7 @@ module Lineup
       urls(configuration["urls"])
       resolutions(configuration["resolutions"])
       filepath_for_images(configuration["filepath_for_images"])
-      use_headless(configuration["use_headless"])
+      use_phantomjs(configuration["use_phantomjs"])
       difference_path(configuration["difference_path"])
 
       # the method calls set the variables for the parameters, we return an array with all of them.

@@ -15,7 +15,7 @@ describe '#screeshot_recorder' do
     # Given
     file = "#{Dir.pwd}/test_configuration.json"
     FileUtils.rm file if (File.exists? file)
-    json = '{"urls":"page1, page2","resolutions":"13,42","filepath_for_images":"some/path","use_headless":true,"difference_path":"some/difference/image/path"}'
+    json = '{"urls":"page1, page2","resolutions":"13,42","filepath_for_images":"some/path","use_phantomjs":true,"difference_path":"some/difference/image/path"}'
     save_json(json, file)
 
     # When
@@ -102,7 +102,7 @@ describe '#screeshot_recorder' do
     # When
     lineup.record_screenshot('base')
     expect{
-      lineup.use_headless true
+      lineup.use_phantomjs true
 
       # Then
     }.to raise_error ArgumentError
@@ -155,9 +155,9 @@ describe '#screeshot_recorder' do
     #     :url => 'sport',
     #     :width => 600,
     #     :difference => 0.7340442722738748,
-    #     :base_file => '~/lineup/tests/respec/screenshots/base_sport_600.png'
-    #     :new_file =>  '~/lineup/tests/respec/screenshots/new_sport_600.png'
-    #     :diff_file => '~/lineup/tests/rspec/screenshots/DIFFERENCE_sport_600.png'
+    #     :base_file => '/home/myname/lineup/tests/respec/screenshots/base_sport_600.png'
+    #     :new_file =>  '/home/myname/lineup/tests/respec/screenshots/new_sport_600.png'
+    #     :diff_file => '/home/myname/lineup/tests/rspec/screenshots/DIFFERENCE_sport_600.png'
     #   }
     # ]
     #

@@ -12,5 +12,4 @@ Gem::Specification.new do |gem|
   gem.description = %q{lineup takes to screenshots of your app and compares them}
   gem.homepage = 'https://www.otto.de'
   gem.files = `git ls-files`.split($\)
-  gem.executables = gem.files.grep(%r{^bin/}).map { |f| File.basename(f) }
 end

@@ -3,5 +3,5 @@
 require 'lineup'
 
 lineup = Lineup::Screenshot.new('otto.de')
-lineup.use_headless false
+lineup.use_phantomjs false
 lineup.record_screenshot('base')
