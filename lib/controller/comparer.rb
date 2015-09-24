@@ -52,14 +52,14 @@ class Comparer
               'DIFFERENCE'
           )
           images.save_difference_image diff_name
-          result = [
+          result = {
                     url: url,
                     width: width,
                     difference: images.difference,
                     base_file: base_name,
                     new_file: new_name,
                     difference_file: diff_name
-          ]
+          }
           self.difference << result
         end
       end
@@ -67,19 +67,12 @@ class Comparer
   end
 
   def generate_json(path)
-    difference.each do |result|
-      puts difference
-      f = File.open("#{Dir.pwd}/direct.json")
-      f.write difference
-      f.close
-      json = result.first.to_json
-      file = File.open(
-          "#{path}/log.json", "a+"
-      )
-      file.write(json)
-      file.close
-    end
-
+    json = difference.to_json
+    file = File.open(
+        "#{path}/log.json", "a+"
+    )
+    file.write(json)
+    file.close
   end
 
 

@@ -131,7 +131,7 @@ describe '#screeshot_recorder' do
     width = '600'
     base_site = 'multimedia'
     new_site = 'sport'
-    json_path = "#{Dir.pwd}/somepath"
+    json_path = "#{Dir.pwd}"
     json_file = "#{json_path}/log.json"
 
     # And Given
@@ -150,23 +150,26 @@ describe '#screeshot_recorder' do
 
     # Then
     # the output will be similar to the values here:
-    # {
-    #   :url => 'sport',
-    #   :width => 600,
-    #   :difference => 0.7340442722738748,
-    #   :base_file => '~/lineup/tests/respec/screenshots/base_sport_600.png'
-    #   :new_file =>  '~/lineup/tests/respec/screenshots/new_sport_600.png'
-    #   :diff_file => '~/lineup/tests/rspec/screenshots/DIFFERENCE_sport_600.png'
-    # }
+    # [
+    #   {
+    #     :url => 'sport',
+    #     :width => 600,
+    #     :difference => 0.7340442722738748,
+    #     :base_file => '~/lineup/tests/respec/screenshots/base_sport_600.png'
+    #     :new_file =>  '~/lineup/tests/respec/screenshots/new_sport_600.png'
+    #     :diff_file => '~/lineup/tests/rspec/screenshots/DIFFERENCE_sport_600.png'
+    #   }
+    # ]
+    #
     expect(
-        (lineup.compare('base', 'new').first.first)[:url]
+        (lineup.compare('base', 'new').first)[:url]
     ).to eq('sport')
     # And
     expect(
-        (lineup.compare('base', 'new').first.first)[:width]
+        (lineup.compare('base', 'new').first)[:width]
     ).to eq(600)
     # And
-    result = (lineup.compare('base', 'new').first.first)[:difference]
+    result = (lineup.compare('base', 'new').first)[:difference]
     expect(
         result
     ).to be_within(15).of(20) # 'compare' returns the difference of pixel between the screenshots in %
@@ -174,15 +177,15 @@ describe '#screeshot_recorder' do
     # but the pages may some day look more or less alike, then these values can be changed
     # And
     expect(
-        (lineup.compare('base', 'new').first.first)[:base_file]
+        (lineup.compare('base', 'new').first)[:base_file]
     ).to include("/lineup/tests/rspec/screenshots/base_sport_600.png")
     # And
     expect(
-        (lineup.compare('base', 'new').first.first)[:new_file]
+        (lineup.compare('base', 'new').first)[:new_file]
     ).to include("/lineup/tests/rspec/screenshots/new_sport_600.png")
     # And
     expect(
-        (lineup.compare('base', 'new').first.first)[:difference_file]
+        (lineup.compare('base', 'new').first)[:difference_file]
     ).to include("/lineup/tests/rspec/screenshots/DIFFERENCE_sport_600.png")
 
     # And When
