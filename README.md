@@ -121,13 +121,14 @@ resolutions = '600, 800, 1200'
 images_path = '/home/myname/lineup/screenshots'
 difference_path = '/home/myname/lineup/results'
 json_path = 'home/myname/lineup/results'
-phantom = true
+phantomjs = true
 
 lineup = Lineup::Screenshot.new('https://www.otto.de')
 lineup.urls(urls)
 lineup.resolutions(resolutions)
 lineup.filepath_for_images(images_path
 lineup.difference_path(difference_path)
+lineup.use_phantomjs(phantomjs)
     
 lineup.record_screenshot(base_name)
 # do sth. (eg. deploy new software)
