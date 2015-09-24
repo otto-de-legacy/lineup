@@ -8,7 +8,8 @@ For all images that you want to compare, you will receive information about how 
 between the two image version and an image, that contains only the parts, that changed, a "difference image".
 
 ![Example view of base (left), new (right) as well as diff image.](doc/example.png)
-Picture: Example view of base (left), new (right) as well as diff image.
+Picture: Example view of base (left), new (right) as well as diff image. In this example, the margin around the bottom headline increased,
+thus some of the elements moved down.
 
 ## Requirements
 
