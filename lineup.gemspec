@@ -9,7 +9,8 @@ Gem::Specification.new do |gem|
   gem.license = 'MIT'
   gem.email = %w(finn.von.friesland@googlemail.com)
   gem.summary = "lineup will help you in your automated design regression testing"
-  gem.description = %q{lineup takes to screenshots of your app and compares them}
+  gem.description = %q{lineup takes to screenshots of your app and compares them to references in order to find design flaws in your new code.}
   gem.homepage = 'https://www.otto.de'
-  gem.files = `git ls-files`.split($\)
+  gem.files = `git ls-files`.split("\n")
+
 end
