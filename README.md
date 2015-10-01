@@ -106,7 +106,7 @@ While my file contains all relevant information
   "urls":"/multimedia, /sport",
   "resolutions":"600,800,1200",
   "filepath_for_images":"~/images/",
-  "use_headless":true,
+  "use_phantomjs":true,
   "difference_path":"#/images/diff"
 }
 ````
