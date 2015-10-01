@@ -61,7 +61,7 @@ There are multiple ways to specify what to lineup and compare.
 By specifying different urls via ````#urls````:
 ````ruby
 lineup = Lineup::Screenshot.new('https://www.otto.de')
-lineup.urls("/, /multimedia, /sport")
+lineup.urls('/, /multimedia, /sport')
 ````
 This will do analysis of otto.de root (frontpage), otto.de/multimedia and otto.de/sport.
 It requires a comma separated string. Default value is only root.
@@ -69,7 +69,7 @@ It requires a comma separated string. Default value is only root.
 By specifying different resolutions via ````#resolutions````:
 ````ruby    
 lineup = Lineup::Screenshot.new('https://www.otto.de')
-lineup.resolutions("600, 800, 1200")
+lineup.resolutions('600, 800, 1200')
 ````
 The values are the browser width in pixel. For each size an analysis is done.
 It require a comma separated string. Default values are 640px, 800px and 1180px.
@@ -77,14 +77,14 @@ It require a comma separated string. Default values are 640px, 800px and 1180px.
 By specifying a filepath for the screenshots via ````#filepath_for_images````:
 ````ruby    
 lineup = Lineup::Screenshot.new('https://www.otto.de')
-lineup.filepath_for_images(/home/myname/lineup/screenshots)
+lineup.filepath_for_images('/home/myname/lineup/screenshots')
 ````
 Creates a file and saves the screenshots in the file. Default is ````"#{Dir.pwd}/screenshots"````
 
 By specifying a filepath for the difference image via ````#difference_path````:
 ````ruby    
 lineup = Lineup::Screenshot.new('https://www.otto.de')
-lineup.difference_path(/home/myname/lineup/result)
+lineup.difference_path('/home/myname/lineup/result')
 ````
 Creates a file and saves the difference image in the file. Default is ````"#{Dir.pwd}/screenshots"````
 
@@ -98,7 +98,7 @@ If ````false```` the screenshots are taken in Firefox. ````#load_json_config````
 Load all above configs from a json file via 
 ````ruby    
 lineup = Lineup::Screenshot.new('https://www.otto.de')
-lineup.load_json_config(/home/myname/lineup/config.json)
+lineup.load_json_config('/home/myname/lineup/config.json')
 ````
 While my file contains all relevant information
 ````json
