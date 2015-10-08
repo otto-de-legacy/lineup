@@ -51,7 +51,7 @@ lineup.compare('new', 'base')
 You can save it for later use:
 ````ruby
 lineup.save_json('/home/name/lineup/results/')
- => '/home/name/lineup/results/json.log'
+ => '/home/name/lineup/results/log.json'
 ````
 
 ## More configuration:
