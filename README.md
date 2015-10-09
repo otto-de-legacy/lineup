@@ -74,6 +74,14 @@ lineup.resolutions('600, 800, 1200')
 The values are the browser width in pixel. For each size an analysis is done.
 It require a comma separated string. Default values are 640px, 800px and 1180px.
 
+By specifying a wait time for asychron elements on a page via ````#wait_for_asynchron_pages````:
+````ruby
+lineup = Lineup::Screenshot.new('https://www.otto.de')
+lineup.wait_for_asynchron_pages(5)
+````
+The wait time is the time in seconds lineup will wait after the page load before it takes a screenshot.
+In this time third party tools, AJAX or js as well as fonts can be (lazy) loaded. The wait time has no upper limit.
+
 By specifying a filepath for the screenshots via ````#filepath_for_images````:
 ````ruby    
 lineup = Lineup::Screenshot.new('https://www.otto.de')
@@ -107,9 +115,12 @@ While my file contains all relevant information
   "resolutions":"600,800,1200",
   "filepath_for_images":"~/images/",
   "use_phantomjs":true,
-  "difference_path":"#/images/diff"
+  "difference_path":"#/images/diff",
+  "wait_for_asynchron_pages":5
 }
 ````
+However, if the configuration is done with a json object, it needs to contain all information, there
+is no optional parameter.
 
 ## Example:
 

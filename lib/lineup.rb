@@ -174,6 +174,24 @@ module Lineup
 
 
 
+    def wait_for_asynchron_pages(wait)
+
+      # if required a wait time in seconds can be set. This may be needed, if after pageload some
+      # elements are still loaded (Third-Party-Tools, AJAX, JS, Fonts)
+      #
+      # this value is a number (integer) how many seconds lineup will wait before taking a screenshot
+      #
+      # if its not an integer an exception is raised
+
+      raise "wait time needs to be an integer (wait time in seconds)" unless wait.is_a? Integer
+
+      # assign the variable
+
+      @wait_for_asynchron_pages = wait
+    end
+
+
+
     def load_json_config(path)
 
       # loads all possible configs from a json file.
@@ -190,11 +208,12 @@ module Lineup
       filepath_for_images(configuration["filepath_for_images"])
       use_phantomjs(configuration["use_phantomjs"])
       difference_path(configuration["difference_path"])
+      wait_for_asynchron_pages(configuration["wait_for_asynchron_pages"])
 
       # the method calls set the variables for the parameters, we return an array with all of them.
       # for the example above it is:
       # [["/multimedia", "/sport"], [600, 800, 1200], "~/images/", true, "#/images/diff"]
-      [@urls, @resolutions, @screenshots_path, @headless, @difference_path]
+      [@urls, @resolutions, @screenshots_path, @headless, @difference_path, @wait_for_asynchron_pages]
     end
 
 
@@ -211,7 +230,7 @@ module Lineup
       # and saves the screenshot in the file
       #   @screenshot_path
 
-      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless)
+      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless, @wait_for_asynchron_pages)
 
       # the only argument missing is if this is the "base" or "new" screenshot, this can be
       # passed as an argument. The value does not need to be "base" or "new", but can be anything

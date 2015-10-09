@@ -15,7 +15,7 @@ describe '#screeshot_recorder' do
     # Given
     file = "#{Dir.pwd}/test_configuration.json"
     FileUtils.rm file if (File.exists? file)
-    json = '{"urls":"page1, page2","resolutions":"13,42","filepath_for_images":"some/path","use_phantomjs":true,"difference_path":"some/difference/image/path"}'
+    json = '{"urls":"page1, page2","resolutions":"13,42","filepath_for_images":"some/path","use_phantomjs":true,"difference_path":"some/difference/image/path",  "wait_for_asynchron_pages":5}'
     save_json(json, file)
 
     # When
@@ -24,7 +24,7 @@ describe '#screeshot_recorder' do
     # Then
     expect(
         lineup.load_json_config(file)
-    ).to eq([['page1', 'page2'], [13,42], 'some/path', true, 'some/difference/image/path'])
+    ).to eq([['page1', 'page2'], [13,42], 'some/path', true, 'some/difference/image/path', 5])
 
     # cleanup:
     FileUtils.rm file if (File.exists? file)

@@ -7,13 +7,14 @@ require_relative '../helper'
 
 class Browser
 
-  def initialize(baseurl, urls, resolutions, path, headless)
+  def initialize(baseurl, urls, resolutions, path, headless, wait)
     @absolute_image_path = path
     FileUtils.mkdir_p @absolute_image_path
     @baseurl = baseurl
     @urls = urls
     @resolutions = resolutions
     @headless = headless
+    @wait = wait
   end
 
   def record(version)
@@ -52,6 +53,7 @@ class Browser
     @browser.cookies.clear
     url = Helper.url(@baseurl, url)
     @browser.goto url
+    sleep @wait if @wait
     @browser.screenshot.save( File.expand_path(filename))
   end
 
