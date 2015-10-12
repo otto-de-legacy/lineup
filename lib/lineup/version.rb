@@ -1,7 +1,7 @@
 module Lineup
   class Version
     MAJOR = 0
-    MINOR = 1
+    MINOR = 2
     PATCH = 0
 
     class << self
