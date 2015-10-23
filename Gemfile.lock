@@ -7,7 +7,7 @@ PATH
       headless (>= 0.1.1)
       oily_png (>= 1.2.0)
       pxdoppelganger (>= 0.1.1)
-      rspec (>= 3.2.0)
+      rspec (~> 3.2)
       selenium-webdriver (>= 2.46.2)
       watir (>= 5.0.0)
       watir-webdriver (>= 0.8.0)
