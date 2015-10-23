@@ -43,9 +43,9 @@ Analyse the results:
 ````ruby
 lineup.compare('new', 'base')
  => [{:url => 'sport', :width => 600, :difference => 0.7340442722738748,
-    :base_file => '/home/name/lineup/screenshots/base_frontpage_600.png'
-    :new_file =>  '/home/name/lineup/screenshots/new_frontpage_600.png'
-    :diff_file => '/home/name/lineup/screenshots/DIFFERENCE_frontpage_600.png' }]
+    :base_file => '/home/name/lineup/screenshots/frontpage_600_base.png'
+    :new_file =>  '/home/name/lineup/screenshots/frontpage_600_new.png'
+    :diff_file => '/home/name/lineup/screenshots/frontpage_600_DIFFERENCE.png' }]
 ````
 
 You can save it for later use:

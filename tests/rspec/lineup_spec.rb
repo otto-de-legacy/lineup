@@ -39,15 +39,15 @@ describe '#screeshot_recorder' do
 
     # Then
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/base_frontpage_640.png")
+        File.exist? ("#{Dir.pwd}/screenshots/frontpage_640_base.png")
     ).to be(true)
     # And
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/base_frontpage_800.png")
+        File.exist? ("#{Dir.pwd}/screenshots/frontpage_800_base.png")
     ).to be(true)
     # And
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/base_frontpage_1180.png")
+        File.exist? ("#{Dir.pwd}/screenshots/frontpage_1180_base.png")
     ).to be(true)
 
   end
@@ -62,7 +62,7 @@ describe '#screeshot_recorder' do
 
     # Then
     lineup.record_screenshot('base')
-    imagewidth = Dimensions.width("#{Dir.pwd}/screenshots/base_frontpage_#{width}.png")
+    imagewidth = Dimensions.width("#{Dir.pwd}/screenshots/frontpage_#{width}_base.png")
     expect(
         imagewidth
     ).to be < (width.to_i + 10) #depending on the browser:
@@ -84,11 +84,11 @@ describe '#screeshot_recorder' do
 
     # Then
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/base_frontpage_1180.png")
+        File.exist? ("#{Dir.pwd}/screenshots/frontpage_1180_base.png")
     ).to be(true)
 
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/base_multimedia_1180.png")
+        File.exist? ("#{Dir.pwd}/screenshots/multimedia_1180_base.png")
     ).to be(true)
 
   end
@@ -139,7 +139,7 @@ describe '#screeshot_recorder' do
     lineup.urls(base_site)
     lineup.resolutions(width)
     lineup.record_screenshot('base')
-    FileUtils.mv "#{Dir.pwd}/screenshots/base_#{base_site}_#{width}.png", "#{Dir.pwd}/screenshots/base_#{new_site}_#{width}.png"
+    FileUtils.mv "#{Dir.pwd}/screenshots/#{base_site}_#{width}_base.png", "#{Dir.pwd}/screenshots/#{new_site}_#{width}_base.png"
     # change the url and go to a different page, in this way we ensure a conflict and thus a result from the comparison
     lineup = Lineup::Screenshot.new(BASE_URL)
     lineup.urls(new_site)
@@ -155,9 +155,9 @@ describe '#screeshot_recorder' do
     #     :url => 'sport',
     #     :width => 600,
     #     :difference => 0.7340442722738748,
-    #     :base_file => '/home/myname/lineup/tests/respec/screenshots/base_sport_600.png'
-    #     :new_file =>  '/home/myname/lineup/tests/respec/screenshots/new_sport_600.png'
-    #     :diff_file => '/home/myname/lineup/tests/rspec/screenshots/DIFFERENCE_sport_600.png'
+    #     :base_file => '/home/myname/lineup/tests/respec/screenshots/sport_600_base.png'
+    #     :new_file =>  '/home/myname/lineup/tests/respec/screenshots/sport_600_new.png'
+    #     :diff_file => '/home/myname/lineup/tests/rspec/screenshots/sport_600_DIFFERENCE.png'
     #   }
     # ]
     #
@@ -178,15 +178,15 @@ describe '#screeshot_recorder' do
     # And
     expect(
         (lineup.compare('base', 'new').first)[:base_file]
-    ).to include("/lineup/tests/rspec/screenshots/base_sport_600.png")
+    ).to include("/lineup/tests/rspec/screenshots/sport_600_base.png")
     # And
     expect(
         (lineup.compare('base', 'new').first)[:new_file]
-    ).to include("/lineup/tests/rspec/screenshots/new_sport_600.png")
+    ).to include("/lineup/tests/rspec/screenshots/sport_600_new.png")
     # And
     expect(
         (lineup.compare('base', 'new').first)[:difference_file]
-    ).to include("/lineup/tests/rspec/screenshots/DIFFERENCE_sport_600.png")
+    ).to include("/lineup/tests/rspec/screenshots/sport_600_DIFFERENCE.png")
 
     # And When
     lineup.save_json(json_path)

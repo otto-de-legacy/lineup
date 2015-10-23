@@ -1,7 +1,16 @@
 PATH
   remote: .
   specs:
-    lineup (0.1.0)
+    lineup (0.2.0)
+      chunky_png
+      dimensions
+      headless
+      oily_png
+      pxdoppelganger (= 0.1.1)
+      rspec
+      selenium-webdriver
+      watir
+      watir-webdriver
 
 GEM
   remote: https://rubygems.org/

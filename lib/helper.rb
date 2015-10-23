@@ -2,7 +2,7 @@ module Helper
   extend self
 
   def filename(path, url, width, version)
-    "#{path}/#{version}_#{name(url)}_#{width}.png"
+    "#{path}/#{name(url)}_#{width}_#{version}.png"
   end
 
   def url(base, url)
