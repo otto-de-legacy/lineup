@@ -13,14 +13,14 @@ Gem::Specification.new do |gem|
   gem.homepage = 'https://www.otto.de'
   gem.files = `git ls-files`.split("\n")
 
-  gem.add_dependency('rspec')
-  gem.add_dependency('pxdoppelganger', ['0.1.1'])
-  gem.add_dependency('selenium-webdriver')
-  gem.add_dependency('watir-webdriver')
-  gem.add_dependency('watir')
-  gem.add_dependency('headless')
-  gem.add_dependency('dimensions')
-  gem.add_dependency('chunky_png')
-  gem.add_dependency('oily_png')
+  gem.add_dependency('rspec', [">= 3.2.0"])
+  gem.add_dependency('pxdoppelganger', [">= 0.1.1"])
+  gem.add_dependency('selenium-webdriver', [">= 2.46.2"])
+  gem.add_dependency('watir-webdriver', [">= 0.8.0"])
+  gem.add_dependency('watir', [">= 5.0.0"])
+  gem.add_dependency('headless', [">= 0.1.1"])
+  gem.add_dependency('dimensions', [">= 1.3.0"])
+  gem.add_dependency('chunky_png', [">= 1.3.4"])
+  gem.add_dependency('oily_png', [">= 1.2.0"])
 
 end
