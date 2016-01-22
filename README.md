@@ -1,6 +1,6 @@
 # Lineup
 
-![Logo](https://raw.githubusercontent.com/otto-de/lineup/master/doc/lineup.png =100px)
+<img src="https://raw.githubusercontent.com/otto-de/lineup/master/doc/lineup.png" alt="Logo" style="width: 100px;"/>
 
 Lineup is doing automated testing of webpage designs, eg. in continious delivery.
 If you push new code to production, you can evaluate the design of your page compared to a defined base design and
