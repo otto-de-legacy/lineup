@@ -7,7 +7,7 @@ require_relative '../helper'
 
 class Browser
 
-  def initialize(baseurl, urls, resolutions, path, headless, wait)
+  def initialize(baseurl, urls, resolutions, path, headless, wait, cookie = false)
     @absolute_image_path = path
     FileUtils.mkdir_p @absolute_image_path
     @baseurl = baseurl
@@ -15,6 +15,7 @@ class Browser
     @resolutions = resolutions
     @headless = headless
     @wait = wait
+    @cookie = cookie
   end
 
   def record(version)
@@ -50,9 +51,14 @@ class Browser
   def screenshot_recorder(width, url, version)
     filename = Helper.filename(@absolute_image_path, url, width, version)
     @browser.driver.manage.window.resize_to(width, 1000)
-    @browser.cookies.clear
+
     url = Helper.url(@baseurl, url)
     @browser.goto url
+    if @cookie
+      @browser.cookies.clear
+      @browser.cookies.add(@cookie[:name], @cookie[:value], domain: @cookie[:domain], path: @cookie[:path], expires: Time.now + 7200, secure: @cookie[:secure])
+      @browser.goto url
+    end
     sleep @wait if @wait
     @browser.screenshot.save( File.expand_path(filename))
   end

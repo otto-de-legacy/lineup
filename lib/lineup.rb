@@ -173,6 +173,34 @@ module Lineup
     end
 
 
+    def cookie_for_experiment(cookie)
+
+      # a hash for a cookie can be set here. this is optional.
+      #
+      # e.g {name: 'experiment', value: 'experiment_value', domain: 'domain.com', path: '/', expires: <Time>, secure: false}
+      #
+      # if it is not nil it has to be an array:
+      if cookie
+        # generate :symbol => "value" hash map from "symbol" => "value"
+        cookie = cookie.inject({}){|element,(symbol,value)| element[symbol.to_sym] = value; element}
+
+        #Validation
+        (raise "Cookie must be a hash of format
+              {name: 'experiment', value: 'experiment_value', domain: 'domain.com', path: '/', expires: <Time>, secure: false}
+              " unless cookie.is_a? Hash)
+
+        raise "cookie must have value for :name" unless (cookie[:name]).is_a? String
+        raise "cookie must have value for :value" unless (cookie[:value]).is_a? String
+        raise "cookie must have value for :domain" unless (cookie[:domain]).is_a? String
+        raise "cookie must have value for :path" unless (cookie[:path]).is_a? String
+        raise "cookie must have value for :secure" if (cookie[:secure]) == nil
+      end
+
+      # assign the variable
+
+      @cookie_for_experiment = cookie
+    end
+
 
     def wait_for_asynchron_pages(wait)
 
@@ -189,8 +217,6 @@ module Lineup
 
       @wait_for_asynchron_pages = wait
     end
-
-
 
     def load_json_config(path)
 
@@ -209,11 +235,12 @@ module Lineup
       use_phantomjs(configuration["use_phantomjs"])
       difference_path(configuration["difference_path"])
       wait_for_asynchron_pages(configuration["wait_for_asynchron_pages"])
+      cookie_for_experiment(configuration["cookie_for_experiment"])
 
       # the method calls set the variables for the parameters, we return an array with all of them.
       # for the example above it is:
       # [["/multimedia", "/sport"], [600, 800, 1200], "~/images/", true, "#/images/diff"]
-      [@urls, @resolutions, @screenshots_path, @headless, @difference_path, @wait_for_asynchron_pages]
+      [@urls, @resolutions, @screenshots_path, @headless, @difference_path, @wait_for_asynchron_pages, @cookie_for_experiment]
     end
 
 
@@ -230,7 +257,7 @@ module Lineup
       # and saves the screenshot in the file
       #   @screenshot_path
 
-      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless, @wait_for_asynchron_pages)
+      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless, @wait_for_asynchron_pages, @cookie_for_experiment)
 
       # the only argument missing is if this is the "base" or "new" screenshot, this can be
       # passed as an argument. The value does not need to be "base" or "new", but can be anything

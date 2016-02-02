@@ -6,7 +6,7 @@ require_relative '../../lib/lineup'
 
 describe '#screeshot_recorder' do
 
-  BASE_URL = 'https://www.otto.de'
+  BASE_URL = 'https://www.google.de/'
   SCREENSHOTS = "#{Dir.pwd}/screenshots/"
 
   after(:each) { FileUtils.rmtree SCREENSHOTS }
@@ -15,7 +15,13 @@ describe '#screeshot_recorder' do
     # Given
     file = "#{Dir.pwd}/test_configuration.json"
     FileUtils.rm file if (File.exists? file)
-    json = '{"urls":"page1, page2","resolutions":"13,42","filepath_for_images":"some/path","use_phantomjs":true,"difference_path":"some/difference/image/path",  "wait_for_asynchron_pages":5}'
+    json = '{"urls":"page1, page2",
+             "resolutions":"13,42",
+             "filepath_for_images":"some/path",
+             "use_phantomjs":true,
+             "difference_path":"some/difference/image/path",
+             "wait_for_asynchron_pages":5
+             }'
     save_json(json, file)
 
     # When
@@ -24,7 +30,7 @@ describe '#screeshot_recorder' do
     # Then
     expect(
         lineup.load_json_config(file)
-    ).to eq([['page1', 'page2'], [13,42], 'some/path', true, 'some/difference/image/path', 5])
+    ).to eq([['page1', 'page2'], [13,42], 'some/path', true, 'some/difference/image/path', 5, nil])
 
     # cleanup:
     FileUtils.rm file if (File.exists? file)
@@ -54,7 +60,7 @@ describe '#screeshot_recorder' do
 
   it 'takes a screenshot a desired resolution' do
     # Given
-    width = '320' #min width firefox as of Sep 2015
+    width = '700'
     lineup = Lineup::Screenshot.new(BASE_URL)
 
     # When
@@ -74,7 +80,7 @@ describe '#screeshot_recorder' do
 
   it 'takes screenshots of different pages, if specified' do
     # Given
-    urls = '/, multimedia, sport'
+    urls = '/, flights'
     lineup = Lineup::Screenshot.new(BASE_URL)
     lineup.resolutions('1180')
     lineup.urls(urls)
@@ -88,7 +94,7 @@ describe '#screeshot_recorder' do
     ).to be(true)
 
     expect(
-        File.exist? ("#{Dir.pwd}/screenshots/multimedia_1180_base.png")
+        File.exist? ("#{Dir.pwd}/screenshots/flights_1180_base.png")
     ).to be(true)
 
   end
@@ -106,14 +112,22 @@ describe '#screeshot_recorder' do
 
       # Then
     }.to raise_error ArgumentError
-
   end
 
   it 'compares a base and a new screenshot and detects no difference if images are the same' do
     # Given
     lineup = Lineup::Screenshot.new(BASE_URL)
-    lineup.urls('/shoppages/begood')
+    lineup.urls('/')
     lineup.resolutions('400')
+    lineup.wait_for_asynchron_pages(5)
+    lineup.use_phantomjs(true)
+    cookie =  {"name" => "CONSENT",
+               "value" => "YES+DE.de+V7",
+               "domain" => ".google.de",
+               "path" => "/",
+               "secure" => false}
+    lineup.cookie_for_experiment(cookie)
+
     lineup.record_screenshot('base')
     lineup.record_screenshot('new')
 
@@ -126,11 +140,47 @@ describe '#screeshot_recorder' do
 
   end
 
+  it 'compares a base and a new screenshot when loading a json config and setting a cookie' do
+    # Given
+    file = "#{Dir.pwd}/test_configuration.json"
+    FileUtils.rm file if (File.exists? file)
+    json = '{"urls":"page1, page2",
+             "resolutions":"13,42",
+             "filepath_for_images":"some/path",
+             "use_phantomjs":true,
+             "difference_path":"some/difference/image/path",
+             "wait_for_asynchron_pages":5,
+             "cookie_for_experiment":{
+                                      "name":"CONSENT",
+                                      "value":"YES+DE.de+V7",
+                                      "domain":".google.de",
+                                      "path":"/",
+                                      "secure":false
+                                      }
+             }'
+    save_json(json, file)
+    lineup = Lineup::Screenshot.new(BASE_URL)
+    lineup.load_json_config(file)
+
+    lineup.record_screenshot('base')
+    lineup.record_screenshot('new')
+
+    expect(
+        # When
+        lineup.compare('base', 'new')
+
+        # Then
+    ).to eq([])
+
+    # cleanup:
+    FileUtils.rm file if (File.exists? file)
+  end
+
   it 'compares a base and a new screenshot and returns the difference if the images are NOT the same as json log' do
     # Given
-    width = '600'
-    base_site = 'multimedia'
-    new_site = 'sport'
+    width = '800'
+    base_site = '?q=test'
+    new_site = '?q=somethingelse'
     json_path = "#{Dir.pwd}"
     json_file = "#{json_path}/log.json"
 
@@ -152,41 +202,38 @@ describe '#screeshot_recorder' do
     # the output will be similar to the values here:
     # [
     #   {
-    #     :url => 'sport',
-    #     :width => 600,
+    #     :url => 'translate',
+    #     :width => 800,
     #     :difference => 0.7340442722738748,
-    #     :base_file => '/home/myname/lineup/tests/respec/screenshots/sport_600_base.png'
-    #     :new_file =>  '/home/myname/lineup/tests/respec/screenshots/sport_600_new.png'
-    #     :diff_file => '/home/myname/lineup/tests/rspec/screenshots/sport_600_DIFFERENCE.png'
+    #     :base_file => '/home/myname/lineup/tests/respec/screenshots/translate_600_base.png'
+    #     :new_file =>  '/home/myname/lineup/tests/respec/screenshots/translate_600_new.png'
+    #     :diff_file => '/home/myname/lineup/tests/rspec/screenshots/translate_600_DIFFERENCE.png'
     #   }
     # ]
     #
     expect(
         (lineup.compare('base', 'new').first)[:url]
-    ).to eq('sport')
+    ).to eq('?q=somethingelse')
     # And
     expect(
         (lineup.compare('base', 'new').first)[:width]
-    ).to eq(600)
+    ).to eq(800)
     # And
     result = (lineup.compare('base', 'new').first)[:difference]
     expect(
         result
-    ).to be_within(15).of(20) # 'compare' returns the difference of pixel between the screenshots in %
-    # 15-20% of pixel works toady (12.3 on 2015/09) for the difference between sport and multimedia page of OTTO.de,
-    # but the pages may some day look more or less alike, then these values can be changed
-    # And
+    ).to be > 0 # 'compare' returns the difference of pixel between the screenshots in %
     expect(
         (lineup.compare('base', 'new').first)[:base_file]
-    ).to include("/lineup/tests/rspec/screenshots/sport_600_base.png")
+    ).to include("/lineup/tests/rspec/screenshots/?q=somethingelse_#{width}_base.png")
     # And
     expect(
         (lineup.compare('base', 'new').first)[:new_file]
-    ).to include("/lineup/tests/rspec/screenshots/sport_600_new.png")
+    ).to include("/lineup/tests/rspec/screenshots/?q=somethingelse_#{width}_new.png")
     # And
     expect(
         (lineup.compare('base', 'new').first)[:difference_file]
-    ).to include("/lineup/tests/rspec/screenshots/sport_600_DIFFERENCE.png")
+    ).to include("/lineup/tests/rspec/screenshots/?q=somethingelse_#{width}_DIFFERENCE.png")
 
     # And When
     lineup.save_json(json_path)
