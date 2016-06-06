@@ -30,7 +30,7 @@ describe '#screeshot_recorder' do
     # Then
     expect(
         lineup.load_json_config(file)
-    ).to eq([['page1', 'page2'], [13,42], 'some/path', true, 'some/difference/image/path', 5, nil])
+    ).to eq([['page1', 'page2'], [13,42], 'some/path', true, 'some/difference/image/path', 5, []])
 
     # cleanup:
     FileUtils.rm file if (File.exists? file)
@@ -156,7 +156,21 @@ describe '#screeshot_recorder' do
                                       "domain":".google.de",
                                       "path":"/",
                                       "secure":false
-                                      }
+                                      },
+             "cookies" : [{
+                                      "name":"cookie2",
+                                      "value":"22222",
+                                      "domain":".google.de",
+                                      "path":"/",
+                                      "secure":false
+                          },
+                          {
+                                      "name":"cookie3",
+                                      "value":"33333",
+                                      "domain":".google.de",
+                                      "path":"/",
+                                      "secure":false
+                          }]
              }'
     save_json(json, file)
     lineup = Lineup::Screenshot.new(BASE_URL)

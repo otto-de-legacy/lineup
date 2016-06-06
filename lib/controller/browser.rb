@@ -7,7 +7,7 @@ require_relative '../helper'
 
 class Browser
 
-  def initialize(baseurl, urls, resolutions, path, headless, wait, cookie = false)
+  def initialize(baseurl, urls, resolutions, path, headless, wait, cookies = [])
     @absolute_image_path = path
     FileUtils.mkdir_p @absolute_image_path
     @baseurl = baseurl
@@ -15,7 +15,7 @@ class Browser
     @resolutions = resolutions
     @headless = headless
     @wait = wait
-    @cookie = cookie
+    @cookies = cookies
   end
 
   def record(version)
@@ -54,9 +54,11 @@ class Browser
 
     url = Helper.url(@baseurl, url)
     @browser.goto url
-    if @cookie
+    if @cookies.any?
       @browser.cookies.clear
-      @browser.cookies.add(@cookie[:name], @cookie[:value], domain: @cookie[:domain], path: @cookie[:path], expires: Time.now + 7200, secure: @cookie[:secure])
+      @cookies.each do |cookie|
+        @browser.cookies.add(cookie[:name], cookie[:value], domain: cookie[:domain], path: cookie[:path], expires: Time.now + 7200, secure: cookie[:secure])
+      end
       @browser.goto url
     end
     sleep @wait if @wait
