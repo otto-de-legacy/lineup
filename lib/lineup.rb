@@ -51,6 +51,8 @@ module Lineup
       # see more in according method below
 
       difference_path("#{Dir.pwd}/screenshots")
+
+      @comparer = []
     end
 
 
@@ -178,7 +180,7 @@ module Lineup
       # if it is not nil it has to be an array:
       if cookie
         # generate :symbol => "value" hash map from "symbol" => "value"
-        cookie = cookie.inject({}){|element,(symbol,value)| element[symbol.to_sym] = value; element}
+        cookie = cookie.inject({}) { |element, (symbol, value)| element[symbol.to_sym] = value; element }
 
         #Validation
         (raise "Cookie must be a hash of format
@@ -265,7 +267,7 @@ module Lineup
       cookies(configuration["cookies"])
 
       if @cookies
-        cookies_merged= @cookies.inject([]) { |a,element| a << element.dup }
+        cookies_merged= @cookies.inject([]) { |a, element| a << element.dup }
       else
         cookies_merged = []
       end
@@ -293,26 +295,32 @@ module Lineup
       #   @screenshot_path
 
       if @cookies
-        cookies_merged= @cookies.inject([]) { |a,element| a << element.dup }
+        cookies_merged= @cookies.inject([]) { |a, element| a << element.dup }
       else
         cookies_merged = []
       end
       if @cookie_for_experiment
         cookies_merged.push(@cookie_for_experiment)
       end
-      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless, @wait_for_asynchron_pages, cookies_merged)
 
-      # the only argument missing is if this is the "base" or "new" screenshot, this can be
-      # passed as an argument. The value does not need to be "base" or "new", but can be anything
-
-      browser.record(version)
-
-      # this will close the browser and terminate the headless environment
-
-      browser.end
+      threads = []
+      i=0
+      @urls.each { |url|
+        @resolutions.each { |resolution|
+          threads[i] = Thread.new {
+            browser = Browser.new(@baseurl, [url], [resolution], @screenshots_path, @headless, @wait_for_asynchron_pages, cookies_merged)
+            # the only argument missing is if this is the "base" or "new" screenshot, this can be
+            # passed as an argument. The value does not need to be "base" or "new", but can be anything
+            browser.record(version)
+            # this will close the browser and terminate the headless environment
+            browser.end
+          }
+          i+=1;
+        }
+      }
+      threads.each { |t| t.join }
 
       # this flag is set, so that parameters like resolution or urls cannot be changed any more
-
       @got_base_screenshots = true
     end
 
@@ -324,29 +332,36 @@ module Lineup
       # as "variable" in the method "record_screenshot"!
       # all other information are constants and are passed along
 
-      @comparer = Comparer.new(base, new, @difference_path, @baseurl, @urls, @resolutions, @screenshots_path)
+      threads = []
+      i=0
+      @urls.each { |url|
+        @resolutions.each { |resolution|
+          threads[i] = Thread.new {
+            @comparer.push(Comparer.new(base, new, @difference_path, @baseurl, [url], [resolution], @screenshots_path))
+          }
+          i+=1;
+        }
+      }
+      threads.each { |t| t.join }
 
       # this gives back an array, which as one element for each difference image.
       # [ {diff_1}, {diff_2}, ...]
       # while each diff is a hash with keys:
       # {url: <url>, width: <width in px>, difference: <%of changed pixel>, base_file: <file path>, new_file: <file path>, diff_file: <file path>}
-
-      @comparer.difference
+      @comparer.each { |c| c.difference }
     end
 
     def save_json(path)
 
       # json output can be saved if needed. A path is required to save the file
-
-      raise "screenshots need to be compared before json output can be gernerated" unless @comparer
+      raise "screenshots need to be compared before json output can be generated" unless @comparer.count > 0
 
       # the array from @comparer.difference is saved as json
-
-      @comparer.json(path)
+      save_comparer_log(path)
 
     end
 
-  private
+    private
 
     def raise_base_screenshots_taken(value)
       if @got_base_screenshots
@@ -356,6 +371,19 @@ module Lineup
 
     def clean(urls)
       urls.gsub(' ', '').gsub(';', ',')
+    end
+
+    def save_comparer_log(path)
+      FileUtils.mkdir_p path
+
+      diff = []
+      @comparer.each { |c| diff += c.difference }
+      json = diff.to_json
+      file = File.open(
+          "#{path}/log.json", "w"
+      )
+      file.write(json)
+      file.close
     end
 
   end

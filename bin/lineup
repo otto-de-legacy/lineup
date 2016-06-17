@@ -1,7 +1,29 @@
 #!/usr/bin/env ruby
 
-require 'lineup'
+require '../lib/lineup'
 
-lineup = Lineup::Screenshot.new('otto.de')
-lineup.use_phantomjs false
+puts("This is an example. And a benchmark.")
+
+lineup = Lineup::Screenshot.new('https://uhr.ptb.de')
+lineup.wait_for_asynchron_pages(1)
+lineup.use_phantomjs true
+start = Time.now
+puts("Taking screenshots")
 lineup.record_screenshot('base')
+screenshots = Time.now
+sleep(2)
+lineup.record_screenshot('nun')
+screenshots2 = Time.now - 2
+puts("Starting comparison")
+lineup.compare('base', 'nun')
+lineup.save_json(".")
+compare = Time.now - 2
+
+s_t = screenshots - start
+puts("Screenshots first run took #{s_t} seconds")
+s_t = screenshots2 - screenshots
+puts("Screenshots second run took #{s_t} seconds")
+c = compare - screenshots2
+puts("Comparison took #{c} seconds")
+
+puts("End")

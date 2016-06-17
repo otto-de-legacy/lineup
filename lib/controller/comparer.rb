@@ -17,11 +17,6 @@ class Comparer
     compare_images
   end
 
-  def json(path)
-    FileUtils.mkdir_p path
-    generate_json(path)
-  end
-
   private
 
   def compare_images
@@ -53,27 +48,17 @@ class Comparer
           )
           images.save_difference_image diff_name
           result = {
-                    url: url,
-                    width: width,
-                    difference: images.difference,
-                    base_file: base_name,
-                    new_file: new_name,
-                    difference_file: diff_name
+              url: url,
+              width: width,
+              difference: images.difference,
+              base_file: base_name,
+              new_file: new_name,
+              difference_file: diff_name
           }
           self.difference << result
         end
       end
     end
   end
-
-  def generate_json(path)
-    json = difference.to_json
-    file = File.open(
-        "#{path}/log.json", "a+"
-    )
-    file.write(json)
-    file.close
-  end
-
 
 end
