@@ -332,23 +332,25 @@ module Lineup
       # as "variable" in the method "record_screenshot"!
       # all other information are constants and are passed along
 
-      threads = []
-      i=0
+      #threads = []
+      #i=0
       @urls.each { |url|
         @resolutions.each { |resolution|
-          threads[i] = Thread.new {
+          #threads[i] = Thread.new {
             @comparer.push(Comparer.new(base, new, @difference_path, @baseurl, [url], [resolution], @screenshots_path))
-          }
-          i+=1;
+          #}
+          #i+=1;
         }
       }
-      threads.each { |t| t.join }
+      #threads.each { |t| t.join } //TODO Fix multithreading issue with 3rd party lib
 
       # this gives back an array, which as one element for each difference image.
       # [ {diff_1}, {diff_2}, ...]
       # while each diff is a hash with keys:
       # {url: <url>, width: <width in px>, difference: <%of changed pixel>, base_file: <file path>, new_file: <file path>, diff_file: <file path>}
-      @comparer.each { |c| c.difference }
+      merged_differences = []
+      @comparer.each { |c| merged_differences += c.difference }
+      return merged_differences;
     end
 
     def save_json(path)
