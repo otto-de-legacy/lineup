@@ -303,22 +303,12 @@ module Lineup
         cookies_merged.push(@cookie_for_experiment)
       end
 
-      threads = []
-      i=0
-      @urls.each { |url|
-        @resolutions.each { |resolution|
-          threads[i] = Thread.new {
-            browser = Browser.new(@baseurl, [url], [resolution], @screenshots_path, @headless, @wait_for_asynchron_pages, cookies_merged)
-            # the only argument missing is if this is the "base" or "new" screenshot, this can be
-            # passed as an argument. The value does not need to be "base" or "new", but can be anything
-            browser.record(version)
-            # this will close the browser and terminate the headless environment
-            browser.end
-          }
-          i+=1;
-        }
-      }
-      threads.each { |t| t.join }
+      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless, @wait_for_asynchron_pages, cookies_merged)
+      # the only argument missing is if this is the "base" or "new" screenshot, this can be
+      # passed as an argument. The value does not need to be "base" or "new", but can be anything
+      browser.record(version)
+      # this will close the browser and terminate the headless environment
+      browser.end
 
       # this flag is set, so that parameters like resolution or urls cannot be changed any more
       @got_base_screenshots = true
