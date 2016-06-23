@@ -6,7 +6,7 @@ require_relative '../../lib/lineup'
 
 describe '#screeshot_recorder' do
 
-  BASE_URL = 'https://www.google.de/'
+  BASE_URL = 'https://www.google.de'
   SCREENSHOTS = "#{Dir.pwd}/screenshots/"
 
   after(:each) { FileUtils.rmtree SCREENSHOTS }
@@ -17,9 +17,9 @@ describe '#screeshot_recorder' do
     FileUtils.rm file if (File.exists? file)
     json = '{"urls":"page1, page2",
              "resolutions":"13,42",
-             "filepath_for_images":"some/path",
+             "filepath_for_images":"screenshots/path",
              "use_phantomjs":true,
-             "difference_path":"some/difference/image/path",
+             "difference_path":"screenshots/path/difference",
              "wait_for_asynchron_pages":5
              }'
     save_json(json, file)
@@ -30,7 +30,7 @@ describe '#screeshot_recorder' do
     # Then
     expect(
         lineup.load_json_config(file)
-    ).to eq([['page1', 'page2'], [13,42], 'some/path', true, 'some/difference/image/path', 5, []])
+    ).to eq([['page1', 'page2'], [13,42], 'screenshots/path', true, 'screenshots/path/difference', 5, []])
 
     # cleanup:
     FileUtils.rm file if (File.exists? file)
@@ -58,7 +58,30 @@ describe '#screeshot_recorder' do
 
   end
 
-  it 'takes a screenshot a desired resolution' do
+  it 'opens a URL and takes mobile/tablet/desktop screenshots using firefox' do
+    # Given
+    lineup = Lineup::Screenshot.new(BASE_URL)
+    lineup.use_phantomjs false
+
+    # When
+    lineup.record_screenshot('base')
+
+    # Then
+    expect(
+        File.exist? ("#{Dir.pwd}/screenshots/frontpage_640_base.png")
+    ).to be(true)
+    # And
+    expect(
+        File.exist? ("#{Dir.pwd}/screenshots/frontpage_800_base.png")
+    ).to be(true)
+    # And
+    expect(
+        File.exist? ("#{Dir.pwd}/screenshots/frontpage_1180_base.png")
+    ).to be(true)
+
+  end
+
+  it 'takes a screenshot at desired resolution' do
     # Given
     width = '700'
     lineup = Lineup::Screenshot.new(BASE_URL)
@@ -99,7 +122,7 @@ describe '#screeshot_recorder' do
 
   end
 
-  it 'raises and exception if, parameters are changed after the base screenshot' do
+  it 'raises and exception if parameters are changed after the base screenshot' do
     # Given
     lineup = Lineup::Screenshot.new(BASE_URL)
     lineup.urls('/')
@@ -144,11 +167,12 @@ describe '#screeshot_recorder' do
     # Given
     file = "#{Dir.pwd}/test_configuration.json"
     FileUtils.rm file if (File.exists? file)
+
     json = '{"urls":"page1, page2",
              "resolutions":"13,42",
-             "filepath_for_images":"some/path",
+             "filepath_for_images":"screenshots/path",
              "use_phantomjs":true,
-             "difference_path":"some/difference/image/path",
+             "difference_path":"screenshots/path/difference",
              "wait_for_asynchron_pages":5,
              "cookie_for_experiment":{
                                       "name":"CONSENT",
@@ -188,6 +212,7 @@ describe '#screeshot_recorder' do
 
     # cleanup:
     FileUtils.rm file if (File.exists? file)
+
   end
 
   it 'compares a base and a new screenshot and returns the difference if the images are NOT the same as json log' do
