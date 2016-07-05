@@ -4,20 +4,28 @@ require '../lib/lineup'
 
 puts("This is an example. And a benchmark.")
 
-lineup = Lineup::Screenshot.new('https://uhr.ptb.de')
-lineup.wait_for_asynchron_pages(1)
-lineup.use_phantomjs true
+lineup = Lineup::Screenshot.new('https://prelive.otto.de')
+lineup.urls("/,multimedia,moebel,damenmode,mittesten")
+lineup.cookies([{"name"=>"trackingDisabled","value"=>"true","secure"=>false,"path"=>"/","domain"=>".otto.de"},
+                {"name"=>"survey","value"=>"1","secure"=>false,"path"=>"/","domain"=>".otto.de"}])
+lineup.localStorage(["us_customerServiceWidget"=>"{'customerServiceWidgetNotificationHidden':{'value':true,'timestamp':1467723066080}}"])
+lineup.resolutions("600,800,1200")
+lineup.use_phantomjs false
+lineup.wait_for_asynchron_pages(2)
+
+puts("Taking base screenshots")
 start = Time.now
-puts("Taking screenshots")
 lineup.record_screenshot('base')
 screenshots = Time.now
-sleep(2)
-lineup.record_screenshot('nun')
-screenshots2 = Time.now - 2
+
+puts("Taking new screenshots")
+lineup.record_screenshot('new')
+screenshots2 = Time.now
+
 puts("Starting comparison")
-lineup.compare('base', 'nun')
+lineup.compare('base', 'new')
 lineup.save_json(".")
-compare = Time.now - 2
+compare = Time.now
 
 s_t = screenshots - start
 puts("Screenshots first run took #{s_t} seconds")

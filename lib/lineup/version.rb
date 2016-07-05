@@ -1,8 +1,8 @@
 module Lineup
   class Version
     MAJOR = 0
-    MINOR = 5
-    PATCH = 2
+    MINOR = 6
+    PATCH = 0
 
     class << self
       def to_s

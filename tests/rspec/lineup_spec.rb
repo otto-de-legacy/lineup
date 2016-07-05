@@ -11,12 +11,12 @@ describe '#screeshot_recorder' do
 
   after(:each) { FileUtils.rmtree SCREENSHOTS }
 
-  it 'loads all configuration from a json file' do
+  it 'loads minimum configuration from a json file' do
     # Given
     file = "#{Dir.pwd}/test_configuration.json"
     FileUtils.rm file if (File.exists? file)
-    json = '{"urls":"page1, page2",
-             "resolutions":"13,42",
+    json = '{"urls":"page1",
+             "resolutions": "13",
              "filepath_for_images":"screenshots/path",
              "use_phantomjs":true,
              "difference_path":"screenshots/path/difference",
@@ -30,7 +30,58 @@ describe '#screeshot_recorder' do
     # Then
     expect(
         lineup.load_json_config(file)
-    ).to eq([['page1', 'page2'], [13,42], 'screenshots/path', true, 'screenshots/path/difference', 5, []])
+    ).to eq([['page1'], [13], 'screenshots/path', true, 'screenshots/path/difference', 5, [], []])
+
+    # cleanup:
+    FileUtils.rm file if (File.exists? file)
+  end
+
+  it 'loads all configuration from a json file' do
+    # Given
+    file = "#{Dir.pwd}/test_configuration.json"
+    FileUtils.rm file if (File.exists? file)
+    json = '{"urls":"page1, page2",
+             "resolutions":"13,42",
+             "filepath_for_images":"screenshots/path",
+             "use_phantomjs":true,
+             "difference_path":"screenshots/path/difference",
+             "wait_for_asynchron_pages":5,
+             "cookie_for_experiment":{
+                                      "name":"cookie1",
+                                      "value":"11111",
+                                      "domain":".google.de",
+                                      "path":"/",
+                                      "secure":false
+                                      },
+             "cookies" : [{
+                                      "name":"cookie2",
+                                      "value":"22222",
+                                      "domain":".google.de",
+                                      "path":"/",
+                                      "secure":false
+                          },
+                          {
+                                      "name":"cookie3",
+                                      "value":"33333",
+                                      "domain":".google.de",
+                                      "path":"/",
+                                      "secure":false
+                          }],
+             "localStorage":[{"myKey1":"myValue1"},{"myKey2":"myValue2"}]
+             }'
+    save_json(json, file)
+
+    # When
+    lineup = Lineup::Screenshot.new(BASE_URL)
+
+    # Then
+    expect(
+        lineup.load_json_config(file)
+    ).to eq([['page1', 'page2'], [13,42], 'screenshots/path', true, 'screenshots/path/difference', 5,
+             [{:name=>"cookie2", :value=>"22222", :domain=>".google.de", :path=>"/", :secure=>false},
+              {:name=>"cookie3", :value=>"33333", :domain=>".google.de", :path=>"/", :secure=>false},
+              {:name=>"cookie1", :value=>"11111", :domain=>".google.de", :path=>"/", :secure=>false}],
+             [{"myKey1"=>"myValue1"}, {"myKey2"=>"myValue2"}]])
 
     # cleanup:
     FileUtils.rm file if (File.exists? file)
@@ -195,6 +246,63 @@ describe '#screeshot_recorder' do
                                       "path":"/",
                                       "secure":false
                           }]
+             }'
+    save_json(json, file)
+    lineup = Lineup::Screenshot.new(BASE_URL)
+    lineup.load_json_config(file)
+
+    lineup.record_screenshot('base')
+    lineup.record_screenshot('new')
+
+    expect(
+        # When
+        lineup.compare('base', 'new')
+
+        # Then
+    ).to eq([])
+
+    # cleanup:
+    FileUtils.rm file if (File.exists? file)
+
+  end
+
+  it 'takes a screenshot when loading a json config and setting local storage key value pair containing single quotes' do
+    # Given
+    file = "#{Dir.pwd}/test_configuration.json"
+    FileUtils.rm file if (File.exists? file)
+
+    json = '{"urls":"page1",
+             "resolutions":"200",
+             "filepath_for_images":"screenshots/path",
+             "use_phantomjs":true,
+             "difference_path":"screenshots/path/difference",
+             "wait_for_asynchron_pages":5,
+             "localStorage":[{"{\'mySpecialKey\'}":"{\'customerServiceWidgetNotificationHidden\':{\'value\':true,\'timestamp\':1467723066092}}"}]
+             }'
+    save_json(json, file)
+    lineup = Lineup::Screenshot.new(BASE_URL)
+    lineup.load_json_config(file)
+
+    lineup.record_screenshot('base')
+    # expect: no exception
+
+    # cleanup:
+    FileUtils.rm file if (File.exists? file)
+
+  end
+
+  it 'compares a base and a new screenshot when loading a json config and setting local storage key value pairs' do
+    # Given
+    file = "#{Dir.pwd}/test_configuration.json"
+    FileUtils.rm file if (File.exists? file)
+
+    json = '{"urls":"page1",
+             "resolutions":"200",
+             "filepath_for_images":"screenshots/path",
+             "use_phantomjs":true,
+             "difference_path":"screenshots/path/difference",
+             "wait_for_asynchron_pages":5,
+             "localStorage":[{"us_customerServiceWidget":"{\'customerServiceWidgetNotificationHidden\':{\'value\':true,\'timestamp\':1467723066092}}"},{"myKey2":"myValue2"}]
              }'
     save_json(json, file)
     lineup = Lineup::Screenshot.new(BASE_URL)

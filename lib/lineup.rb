@@ -230,6 +230,36 @@ module Lineup
     end
 
 
+    def localStorage(localStorage)
+
+      # a hash for localStorage Key Value pair can be set here. this is optional.
+      #
+      # e.g {'key': 'value'}
+      #
+      # if it is not nil it has to be an array:
+
+      @localStorage = []
+      if localStorage
+        localStorage.each do |keyValue|
+          # generate :symbol => "value" hash map from "symbol" => "value"
+          #keyValue = keyValue.inject({}) { |element, (symbol, value)| element[symbol.to_sym] = value; element }
+
+          #Validation
+          (raise "LocalStorage Key Value pair must be a hash of format
+                {'key'=>'value'}
+                " unless keyValue.is_a? Hash)
+
+          raise "LocalStorage Key Value pair must have exactly one key" unless (keyValue.keys.length) == 1
+          raise "LocalStorage Key Value pair must have exactly one value" unless (keyValue.values.length) == 1
+          raise "LocalStorage Key Value pair must have a string as key" unless (keyValue.keys.first).is_a? String
+          raise "LocalStorage Key Value pair must have a string as value" unless (keyValue.values.first).is_a? String
+
+          @localStorage.push(keyValue)
+        end
+      end
+
+    end
+
     def wait_for_asynchron_pages(wait)
 
       # if required a wait time in seconds can be set. This may be needed, if after pageload some
@@ -265,6 +295,7 @@ module Lineup
       wait_for_asynchron_pages(configuration["wait_for_asynchron_pages"])
       cookie_for_experiment(configuration["cookie_for_experiment"])
       cookies(configuration["cookies"])
+      localStorage(configuration["localStorage"])
 
       if @cookies
         cookies_merged= @cookies.inject([]) { |a, element| a << element.dup }
@@ -278,7 +309,7 @@ module Lineup
       # the method calls set the variables for the parameters, we return an array with all of them.
       # for the example above it is:
       # [["/multimedia", "/sport"], [600, 800, 1200], "~/images/", true, "#/images/diff"]
-      [@urls, @resolutions, @screenshots_path, @headless, @difference_path, @wait_for_asynchron_pages, cookies_merged]
+      [@urls, @resolutions, @screenshots_path, @headless, @difference_path, @wait_for_asynchron_pages, cookies_merged, @localStorage]
     end
 
 
@@ -303,7 +334,7 @@ module Lineup
         cookies_merged.push(@cookie_for_experiment)
       end
 
-      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless, @wait_for_asynchron_pages, cookies_merged)
+      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless, @wait_for_asynchron_pages, cookies_merged, @localStorage)
       # the only argument missing is if this is the "base" or "new" screenshot, this can be
       # passed as an argument. The value does not need to be "base" or "new", but can be anything
       browser.record(version)

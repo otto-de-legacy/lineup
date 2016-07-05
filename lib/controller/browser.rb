@@ -7,7 +7,7 @@ require_relative '../helper'
 
 class Browser
 
-  def initialize(baseurl, urls, resolutions, path, headless, wait, cookies = [])
+  def initialize(baseurl, urls, resolutions, path, headless, wait, cookies = [], localStorage = [])
     @absolute_image_path = path
     FileUtils.mkdir_p @absolute_image_path
     @baseurl = baseurl
@@ -15,7 +15,18 @@ class Browser
     @resolutions = resolutions
     @headless = headless
     @wait = wait
-    @cookies = cookies
+
+    if cookies
+      @cookies = cookies
+    else
+      @cookies = []
+    end
+
+    if localStorage
+      @localStorage = localStorage
+    else
+      @localStorage = []
+    end
   end
 
   def record(version)
@@ -53,14 +64,29 @@ class Browser
     @browser.driver.manage.window.resize_to(width, 1000)
 
     url = Helper.url(@baseurl, url)
-    @browser.goto url
-    if @cookies.any?
-      @browser.cookies.clear
-      @cookies.each do |cookie|
-        @browser.cookies.add(cookie[:name], cookie[:value], domain: cookie[:domain], path: cookie[:path], expires: Time.now + 7200, secure: cookie[:secure])
-      end
+
+    if @cookies.any? || @localStorage.any?
+      # load url first before setting cookies and/or localStorage values
       @browser.goto url
+
+      if @cookies.any?
+        @browser.cookies.clear
+        @cookies.each do |cookie|
+          @browser.cookies.add(cookie[:name], cookie[:value], domain: cookie[:domain], path: cookie[:path], expires: Time.now + 7200, secure: cookie[:secure])
+        end
+      end
+
+      if @localStorage.any?
+        @localStorage.each do |keyValue|
+          # Generate javascript for localStorage.setItem, escaping single quotes in key and value
+          stmt = "localStorage.setItem('" + keyValue.keys.first.gsub("'", "\\\\'") + "','" + keyValue.values.first.gsub("'", "\\\\'") + "')";
+          @browser.execute_script(stmt)
+        end
+      end
     end
+
+    @browser.goto url
+
     sleep @wait if @wait
     @browser.screenshot.save( File.expand_path(filename))
   end
