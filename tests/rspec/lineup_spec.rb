@@ -46,13 +46,6 @@ describe '#screeshot_recorder' do
              "use_phantomjs":true,
              "difference_path":"screenshots/path/difference",
              "wait_for_asynchron_pages":5,
-             "cookie_for_experiment":{
-                                      "name":"cookie1",
-                                      "value":"11111",
-                                      "domain":".google.de",
-                                      "path":"/",
-                                      "secure":false
-                                      },
              "cookies" : [{
                                       "name":"cookie2",
                                       "value":"22222",
@@ -79,8 +72,7 @@ describe '#screeshot_recorder' do
         lineup.load_json_config(file)
     ).to eq([['page1', 'page2'], [13,42], 'screenshots/path', true, 'screenshots/path/difference', 5,
              [{:name=>"cookie2", :value=>"22222", :domain=>".google.de", :path=>"/", :secure=>false},
-              {:name=>"cookie3", :value=>"33333", :domain=>".google.de", :path=>"/", :secure=>false},
-              {:name=>"cookie1", :value=>"11111", :domain=>".google.de", :path=>"/", :secure=>false}],
+              {:name=>"cookie3", :value=>"33333", :domain=>".google.de", :path=>"/", :secure=>false}],
              {"myKey1"=>"myValue1", "myKey2"=>"myValue2"}])
 
     # cleanup:
@@ -195,12 +187,12 @@ describe '#screeshot_recorder' do
     lineup.resolutions('400')
     lineup.wait_for_asynchron_pages(5)
     lineup.use_phantomjs(true)
-    cookie =  {"name" => "CONSENT",
+    cookie = [{"name" => "CONSENT",
                "value" => "YES+DE.de+V7",
                "domain" => ".google.de",
                "path" => "/",
-               "secure" => false}
-    lineup.cookie_for_experiment(cookie)
+               "secure" => false}]
+    lineup.cookies(cookie)
 
     lineup.record_screenshot('base')
     lineup.record_screenshot('new')
@@ -225,13 +217,6 @@ describe '#screeshot_recorder' do
              "use_phantomjs":true,
              "difference_path":"screenshots/path/difference",
              "wait_for_asynchron_pages":5,
-             "cookie_for_experiment":{
-                                      "name":"CONSENT",
-                                      "value":"YES+DE.de+V7",
-                                      "domain":".google.de",
-                                      "path":"/",
-                                      "secure":false
-                                      },
              "cookies" : [{
                                       "name":"cookie2",
                                       "value":"22222",

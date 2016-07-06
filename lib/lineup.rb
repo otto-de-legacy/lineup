@@ -170,40 +170,11 @@ module Lineup
       @difference_path = path
     end
 
-
-    def cookie_for_experiment(cookie)
-
-      # a hash for a cookie can be set here. this is optional.
-      #
-      # e.g {name: 'experiment', value: 'experiment_value', domain: 'domain.com', path: '/', expires: <Time>, secure: false}
-      #
-      # if it is not nil it has to be an array:
-      if cookie
-        # generate :symbol => "value" hash map from "symbol" => "value"
-        cookie = cookie.inject({}) { |element, (symbol, value)| element[symbol.to_sym] = value; element }
-
-        #Validation
-        (raise "Cookie must be a hash of format
-              {name: 'experiment', value: 'experiment_value', domain: 'domain.com', path: '/', expires: <Time>, secure: false}
-              " unless cookie.is_a? Hash)
-
-        raise "cookie must have value for :name" unless (cookie[:name]).is_a? String
-        raise "cookie must have value for :value" unless (cookie[:value]).is_a? String
-        raise "cookie must have value for :domain" unless (cookie[:domain]).is_a? String
-        raise "cookie must have value for :path" unless (cookie[:path]).is_a? String
-        raise "cookie must have value for :secure" if (cookie[:secure]) == nil
-      end
-
-      # assign the variable
-
-      @cookie_for_experiment = cookie
-    end
-
     def cookies(cookies)
 
       # a hash for cookies can be set here. this is optional.
       #
-      # e.g {name: 'experiment', value: 'experiment_value', domain: 'domain.com', path: '/', expires: <Time>, secure: false}
+      # e.g {name: 'name', value: 'value', domain: 'domain.com', path: '/', expires: <Time>, secure: false}
       #
       # if it is not nil it has to be an array:
 
@@ -215,7 +186,7 @@ module Lineup
 
           #Validation
           (raise "Cookie must be a hash of format
-                {name: 'experiment', value: 'experiment_value', domain: 'domain.com', path: '/', expires: <Time>, secure: false}
+                {name: 'name', value: 'value', domain: 'domain.com', path: '/', expires: <Time>, secure: false}
                 " unless cookie.is_a? Hash)
 
           raise "cookie must have value for :name" unless (cookie[:name]).is_a? String
@@ -289,23 +260,13 @@ module Lineup
       use_phantomjs(configuration["use_phantomjs"])
       difference_path(configuration["difference_path"])
       wait_for_asynchron_pages(configuration["wait_for_asynchron_pages"])
-      cookie_for_experiment(configuration["cookie_for_experiment"])
       cookies(configuration["cookies"])
       localStorage(configuration["localStorage"])
-
-      if @cookies
-        cookies_merged= @cookies.inject([]) { |a, element| a << element.dup }
-      else
-        cookies_merged = []
-      end
-      if @cookie_for_experiment
-        cookies_merged.push(@cookie_for_experiment)
-      end
 
       # the method calls set the variables for the parameters, we return an array with all of them.
       # for the example above it is:
       # [["/multimedia", "/sport"], [600, 800, 1200], "~/images/", true, "#/images/diff"]
-      [@urls, @resolutions, @screenshots_path, @headless, @difference_path, @wait_for_asynchron_pages, cookies_merged, @localStorage]
+      [@urls, @resolutions, @screenshots_path, @headless, @difference_path, @wait_for_asynchron_pages, @cookies, @localStorage]
     end
 
 
@@ -321,16 +282,7 @@ module Lineup
       # and saves the screenshot in the file
       #   @screenshot_path
 
-      if @cookies
-        cookies_merged= @cookies.inject([]) { |a, element| a << element.dup }
-      else
-        cookies_merged = []
-      end
-      if @cookie_for_experiment
-        cookies_merged.push(@cookie_for_experiment)
-      end
-
-      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless, @wait_for_asynchron_pages, cookies_merged, @localStorage)
+      browser = Browser.new(@baseurl, @urls, @resolutions, @screenshots_path, @headless, @wait_for_asynchron_pages, @cookies, @localStorage)
       # the only argument missing is if this is the "base" or "new" screenshot, this can be
       # passed as an argument. The value does not need to be "base" or "new", but can be anything
       browser.record(version)
