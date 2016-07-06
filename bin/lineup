@@ -4,11 +4,7 @@ require '../lib/lineup'
 
 puts("This is an example. And a benchmark.")
 
-lineup = Lineup::Screenshot.new('https://prelive.otto.de')
-lineup.urls("/,multimedia,moebel,damenmode,mittesten")
-lineup.cookies([{"name"=>"trackingDisabled","value"=>"true","secure"=>false,"path"=>"/","domain"=>".otto.de"},
-                {"name"=>"survey","value"=>"1","secure"=>false,"path"=>"/","domain"=>".otto.de"}])
-lineup.localStorage(["us_customerServiceWidget"=>"{'customerServiceWidgetNotificationHidden':{'value':true,'timestamp':1467723066080}}"])
+lineup = Lineup::Screenshot.new('https://google.de')
 lineup.resolutions("600,800,1200")
 lineup.use_phantomjs false
 lineup.wait_for_asynchron_pages(2)

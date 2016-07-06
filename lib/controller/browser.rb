@@ -77,9 +77,9 @@ class Browser
       end
 
       if @localStorage.any?
-        @localStorage.each do |keyValue|
+        @localStorage.each do |key, value|
           # Generate javascript for localStorage.setItem, escaping single quotes in key and value
-          stmt = "localStorage.setItem('" + keyValue.keys.first.gsub("'", "\\\\'") + "','" + keyValue.values.first.gsub("'", "\\\\'") + "')";
+          stmt = "localStorage.setItem('" + key.gsub("'", "\\\\'") + "','" + value.gsub("'", "\\\\'") + "')";
           @browser.execute_script(stmt)
         end
       end

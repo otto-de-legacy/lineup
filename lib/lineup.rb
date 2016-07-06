@@ -238,23 +238,19 @@ module Lineup
       #
       # if it is not nil it has to be an array:
 
-      @localStorage = []
+      @localStorage = {}
       if localStorage
-        localStorage.each do |keyValue|
-          # generate :symbol => "value" hash map from "symbol" => "value"
-          #keyValue = keyValue.inject({}) { |element, (symbol, value)| element[symbol.to_sym] = value; element }
-
-          #Validation
-          (raise "LocalStorage Key Value pair must be a hash of format
+        #Validation
+        (raise "LocalStorage must be a hash of format
                 {'key'=>'value'}
-                " unless keyValue.is_a? Hash)
+                " unless localStorage.is_a? Hash)
 
-          raise "LocalStorage Key Value pair must have exactly one key" unless (keyValue.keys.length) == 1
-          raise "LocalStorage Key Value pair must have exactly one value" unless (keyValue.values.length) == 1
-          raise "LocalStorage Key Value pair must have a string as key" unless (keyValue.keys.first).is_a? String
-          raise "LocalStorage Key Value pair must have a string as value" unless (keyValue.values.first).is_a? String
+        localStorage.each do |key, value|
+          raise "LocalStorage must have a string as key" if (key).empty?
+          raise "LocalStorage key must be a string" unless (key).is_a? String
+          raise "LocalStorage value must be a string" unless (value).is_a? String
 
-          @localStorage.push(keyValue)
+          @localStorage[key] = value
         end
       end
 
@@ -358,7 +354,7 @@ module Lineup
       @urls.each { |url|
         @resolutions.each { |resolution|
           #threads[i] = Thread.new {
-            @comparer.push(Comparer.new(base, new, @difference_path, @baseurl, [url], [resolution], @screenshots_path))
+          @comparer.push(Comparer.new(base, new, @difference_path, @baseurl, [url], [resolution], @screenshots_path))
           #}
           #i+=1;
         }

@@ -30,7 +30,7 @@ describe '#screeshot_recorder' do
     # Then
     expect(
         lineup.load_json_config(file)
-    ).to eq([['page1'], [13], 'screenshots/path', true, 'screenshots/path/difference', 5, [], []])
+    ).to eq([['page1'], [13], 'screenshots/path', true, 'screenshots/path/difference', 5, [], {}])
 
     # cleanup:
     FileUtils.rm file if (File.exists? file)
@@ -67,7 +67,7 @@ describe '#screeshot_recorder' do
                                       "path":"/",
                                       "secure":false
                           }],
-             "localStorage":[{"myKey1":"myValue1"},{"myKey2":"myValue2"}]
+             "localStorage":{"myKey1":"myValue1","myKey2":"myValue2"}
              }'
     save_json(json, file)
 
@@ -81,7 +81,7 @@ describe '#screeshot_recorder' do
              [{:name=>"cookie2", :value=>"22222", :domain=>".google.de", :path=>"/", :secure=>false},
               {:name=>"cookie3", :value=>"33333", :domain=>".google.de", :path=>"/", :secure=>false},
               {:name=>"cookie1", :value=>"11111", :domain=>".google.de", :path=>"/", :secure=>false}],
-             [{"myKey1"=>"myValue1"}, {"myKey2"=>"myValue2"}]])
+             {"myKey1"=>"myValue1", "myKey2"=>"myValue2"}])
 
     # cleanup:
     FileUtils.rm file if (File.exists? file)
@@ -277,7 +277,7 @@ describe '#screeshot_recorder' do
              "use_phantomjs":true,
              "difference_path":"screenshots/path/difference",
              "wait_for_asynchron_pages":5,
-             "localStorage":[{"{\'mySpecialKey\'}":"{\'customerServiceWidgetNotificationHidden\':{\'value\':true,\'timestamp\':1467723066092}}"}]
+             "localStorage": {"{\'mySpecialKey\'}":"{\'myvalue\':{\'value\':test,\'timestamp\':1467723066092}}"}
              }'
     save_json(json, file)
     lineup = Lineup::Screenshot.new(BASE_URL)
@@ -302,7 +302,7 @@ describe '#screeshot_recorder' do
              "use_phantomjs":true,
              "difference_path":"screenshots/path/difference",
              "wait_for_asynchron_pages":5,
-             "localStorage":[{"us_customerServiceWidget":"{\'customerServiceWidgetNotificationHidden\':{\'value\':true,\'timestamp\':1467723066092}}"},{"myKey2":"myValue2"}]
+             "localStorage":{"\'myKey\'":"{\'myValue\'}","myKey2":"myValue2"}
              }'
     save_json(json, file)
     lineup = Lineup::Screenshot.new(BASE_URL)
