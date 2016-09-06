@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'watir', '~>5.0'
   gem.add_dependency 'headless', '~>0.1'
   gem.add_dependency 'dimensions', '~>1.3'
-  gem.add_dependency 'chunky_png', '~>1.3'
+  gem.add_dependency 'chunky_png', '<=1.3.6'
   gem.add_dependency 'oily_png', '~>1.2'
 
 end
